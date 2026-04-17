@@ -4,13 +4,24 @@ import { motion } from "framer-motion";
 import {
   Building2,
   Cpu,
+  Database,
   MapPinned,
   QrCode,
   Smartphone,
+  UsersRound,
+  Waypoints,
   type LucideIcon,
 } from "lucide-react";
 
-type NodeId = "ingestaApp" | "ingestaGate" | "brain" | "salidaQr" | "salidaHeat";
+type NodeId =
+  | "crm"
+  | "ingestaApp"
+  | "ingestaGate"
+  | "gateway"
+  | "brain"
+  | "operationalDb"
+  | "salidaQr"
+  | "salidaHeat";
 
 type NodeDef = {
   id: NodeId;
@@ -34,6 +45,21 @@ type Edge = {
 
 const NODES: NodeDef[] = [
   {
+    id: "crm",
+    title: "CRM Comfenalco",
+    subtitle: "Master de afiliados",
+    icon: UsersRound,
+    accent: "border-teal-200/60",
+    iconBg: "bg-teal-50 text-teal-600 ring-teal-100",
+    payload: {
+      source: "CRM_Master",
+      query: "validate_user",
+    },
+    xPct: 1,
+    yPct: 37,
+    widthPct: 14,
+  },
+  {
     id: "ingestaApp",
     title: "Ingesta · App",
     subtitle: "Registro móvil",
@@ -46,9 +72,9 @@ const NODES: NodeDef[] = [
       action: "scan",
       src: "app",
     },
-    xPct: 2,
-    yPct: 12,
-    widthPct: 17,
+    xPct: 17,
+    yPct: 8,
+    widthPct: 14,
   },
   {
     id: "ingestaGate",
@@ -63,14 +89,28 @@ const NODES: NodeDef[] = [
       action: "scan",
       src: "gate",
     },
-    xPct: 2,
-    yPct: 62,
-    widthPct: 17,
+    xPct: 17,
+    yPct: 66,
+    widthPct: 14,
+  },
+  {
+    id: "gateway",
+    title: "API Gateway",
+    subtitle: "Enrutador de peticiones",
+    icon: Waypoints,
+    accent: "border-slate-200/60",
+    iconBg: "bg-slate-100 text-slate-700 ring-slate-200",
+    payload: {
+      route_to: "fastpass_engine | guest_db",
+    },
+    xPct: 33,
+    yPct: 37,
+    widthPct: 14,
   },
   {
     id: "brain",
     title: "Motor de Reglas",
-    subtitle: "Validación A / B / C · cooldown",
+    subtitle: "FastPass · Cat. A / B / C",
     icon: Cpu,
     accent: "border-indigo-200/60",
     iconBg: "bg-indigo-50 text-indigo-600 ring-indigo-100",
@@ -79,9 +119,24 @@ const NODES: NodeDef[] = [
       load: "caliente",
       latency_ms: 42,
     },
-    xPct: 42,
-    yPct: 32,
-    widthPct: 17,
+    xPct: 49,
+    yPct: 8,
+    widthPct: 14,
+  },
+  {
+    id: "operationalDb",
+    title: "BD Operativa",
+    subtitle: "PostgreSQL · guest log",
+    icon: Database,
+    accent: "border-rose-200/60",
+    iconBg: "bg-rose-50 text-rose-600 ring-rose-100",
+    payload: {
+      type: "guest_log",
+      action: "store_analytics",
+    },
+    xPct: 49,
+    yPct: 66,
+    widthPct: 14,
   },
   {
     id: "salidaQr",
@@ -95,9 +150,9 @@ const NODES: NodeDef[] = [
       token: "QR_89X",
       cooldown: "45m",
     },
-    xPct: 82,
-    yPct: 12,
-    widthPct: 17,
+    xPct: 83,
+    yPct: 8,
+    widthPct: 14,
   },
   {
     id: "salidaHeat",
@@ -111,17 +166,22 @@ const NODES: NodeDef[] = [
       delta: 1,
       ts: "live",
     },
-    xPct: 82,
-    yPct: 62,
-    widthPct: 17,
+    xPct: 83,
+    yPct: 66,
+    widthPct: 14,
   },
 ];
 
 const EDGES: Edge[] = [
-  { from: "ingestaApp", to: "brain", color: "#0ea5e9", delay: 0 },
-  { from: "ingestaGate", to: "brain", color: "#10b981", delay: 0.6 },
-  { from: "brain", to: "salidaQr", color: "#6366f1", delay: 1.2 },
-  { from: "brain", to: "salidaHeat", color: "#a855f7", delay: 1.8 },
+  { from: "crm", to: "ingestaApp", color: "#14b8a6", delay: 0 },
+  { from: "crm", to: "ingestaGate", color: "#14b8a6", delay: 0.4 },
+  { from: "ingestaApp", to: "gateway", color: "#0ea5e9", delay: 0.8 },
+  { from: "ingestaGate", to: "gateway", color: "#10b981", delay: 1.2 },
+  { from: "gateway", to: "brain", color: "#6366f1", delay: 1.6 },
+  { from: "gateway", to: "operationalDb", color: "#f43f5e", delay: 2.0 },
+  { from: "brain", to: "salidaQr", color: "#f59e0b", delay: 2.4 },
+  { from: "brain", to: "salidaHeat", color: "#a855f7", delay: 2.8 },
+  { from: "operationalDb", to: "salidaHeat", color: "#ec4899", delay: 3.2 },
 ];
 
 function nodeAnchor(id: NodeId, side: "right" | "left"): { x: number; y: number } {

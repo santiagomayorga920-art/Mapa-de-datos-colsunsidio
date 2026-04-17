@@ -1,8 +1,15 @@
+"use client";
+
+import { motion } from "framer-motion";
 import { CircleDollarSign, Gauge, Users } from "lucide-react";
 
-import { capacityData, getGlobalCapacity } from "@/src/lib/mockDb";
+import { capacityData } from "@/src/lib/mockDb";
 
-const INGRESOS_IN_APP_COP = 12_500_000;
+type KpiCardsProps = {
+  aforoFisico: number;
+  aforoApp: number;
+  ingresosInApp: number;
+};
 
 function formatCOP(value: number): string {
   return new Intl.NumberFormat("es-CO", {
@@ -12,16 +19,48 @@ function formatCOP(value: number): string {
   }).format(value);
 }
 
-export function KpiCards() {
-  const aforoActual = getGlobalCapacity();
+const containerVariants = {
+  hidden: {},
+  visible: {
+    transition: {
+      staggerChildren: 0.12,
+      delayChildren: 0.05,
+    },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 24 },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { duration: 0.5, ease: [0.22, 1, 0.36, 1] as const },
+  },
+};
+
+const cardBase =
+  "rounded-2xl border border-white/30 bg-white/70 p-5 shadow-lg shadow-blue-900/5 backdrop-blur-md";
+
+export function KpiCards({ aforoFisico, aforoApp, ingresosInApp }: KpiCardsProps) {
+  const aforoActual = aforoFisico + aforoApp;
   const aforoMax = capacityData.aforoTotal;
   const restante = Math.max(aforoMax - aforoActual, 0);
   const porcentaje = Math.round((aforoActual / aforoMax) * 100);
   const enAlerta = porcentaje >= 90;
 
   return (
-    <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
-      <article className="rounded-2xl border border-white/30 bg-white/70 p-5 shadow-lg shadow-blue-900/5 backdrop-blur-md">
+    <motion.section
+      className="grid grid-cols-1 gap-4 md:grid-cols-3"
+      variants={containerVariants}
+      initial="hidden"
+      animate="visible"
+    >
+      <motion.article
+        variants={itemVariants}
+        whileHover={{ y: -5 }}
+        transition={{ type: "spring", stiffness: 260, damping: 22 }}
+        className={cardBase}
+      >
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100">
@@ -43,7 +82,7 @@ export function KpiCards() {
         </header>
 
         <div className="mt-4 flex items-baseline gap-2">
-          <p className="text-2xl font-semibold text-slate-900">
+          <p className="text-2xl font-semibold tabular-nums text-slate-900">
             {aforoActual.toLocaleString("es-CO")}
           </p>
           <p className="text-sm text-slate-400">
@@ -52,19 +91,25 @@ export function KpiCards() {
         </div>
 
         <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
-          <div
-            className={`h-full rounded-full transition-all ${
+          <motion.div
+            className={`h-full rounded-full ${
               enAlerta ? "bg-rose-500" : "bg-indigo-500"
             }`}
-            style={{ width: `${Math.min(porcentaje, 100)}%` }}
+            animate={{ width: `${Math.min(porcentaje, 100)}%` }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
           />
         </div>
         <p className="mt-2 text-xs text-slate-500">
           {porcentaje}% del aforo permitido.
         </p>
-      </article>
+      </motion.article>
 
-      <article className="rounded-2xl border border-white/30 bg-white/70 p-5 shadow-lg shadow-blue-900/5 backdrop-blur-md">
+      <motion.article
+        variants={itemVariants}
+        whileHover={{ y: -5 }}
+        transition={{ type: "spring", stiffness: 260, damping: 22 }}
+        className={cardBase}
+      >
         <header className="flex items-center gap-2">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100">
             <Users className="h-4 w-4" aria-hidden />
@@ -74,7 +119,7 @@ export function KpiCards() {
           </p>
         </header>
 
-        <p className="mt-4 text-2xl font-semibold text-slate-900">
+        <p className="mt-4 text-2xl font-semibold tabular-nums text-slate-900">
           {restante.toLocaleString("es-CO")}
         </p>
         <p className="mt-1 text-xs text-slate-500">
@@ -86,22 +131,27 @@ export function KpiCards() {
             <dt className="text-[11px] uppercase tracking-wider text-slate-400">
               Físicos
             </dt>
-            <dd className="text-sm font-semibold text-slate-900">
-              {capacityData.ingresosFisicos.toLocaleString("es-CO")}
+            <dd className="text-sm font-semibold tabular-nums text-slate-900">
+              {aforoFisico.toLocaleString("es-CO")}
             </dd>
           </div>
           <div>
             <dt className="text-[11px] uppercase tracking-wider text-slate-400">
               App
             </dt>
-            <dd className="text-sm font-semibold text-slate-900">
-              {capacityData.ingresosApp.toLocaleString("es-CO")}
+            <dd className="text-sm font-semibold tabular-nums text-slate-900">
+              {aforoApp.toLocaleString("es-CO")}
             </dd>
           </div>
         </dl>
-      </article>
+      </motion.article>
 
-      <article className="rounded-2xl border border-white/30 bg-white/70 p-5 shadow-lg shadow-blue-900/5 backdrop-blur-md">
+      <motion.article
+        variants={itemVariants}
+        whileHover={{ y: -5 }}
+        transition={{ type: "spring", stiffness: 260, damping: 22 }}
+        className={cardBase}
+      >
         <header className="flex items-center gap-2">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 ring-1 ring-amber-100">
             <CircleDollarSign className="h-4 w-4" aria-hidden />
@@ -111,8 +161,8 @@ export function KpiCards() {
           </p>
         </header>
 
-        <p className="mt-4 text-2xl font-semibold text-slate-900">
-          {formatCOP(INGRESOS_IN_APP_COP)}
+        <p className="mt-4 text-2xl font-semibold tabular-nums text-slate-900">
+          {formatCOP(ingresosInApp)}
         </p>
         <p className="mt-1 text-xs text-slate-500">
           Compras de FastPass y restaurantes vía aplicación.
@@ -122,7 +172,7 @@ export function KpiCards() {
           <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
           +12,4% vs. ayer
         </div>
-      </article>
-    </section>
+      </motion.article>
+    </motion.section>
   );
 }

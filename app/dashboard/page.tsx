@@ -1,9 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, Waves } from "lucide-react";
 
-import { FastPassTable } from "../components/FastPassTable";
-import { HeatmapChart } from "../components/HeatmapChart";
-import { KpiCards } from "../components/KpiCards";
+import { LiveDashboard } from "../components/LiveDashboard";
 
 export default function DashboardPage() {
   return (
@@ -35,13 +33,7 @@ export default function DashboardPage() {
       </header>
 
       <main className="mx-auto w-full max-w-[1600px] flex-1 px-6 py-6">
-        <div className="flex flex-col gap-6">
-          <KpiCards />
-          <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-            <HeatmapChart />
-            <FastPassTable />
-          </div>
-        </div>
+        <LiveDashboard />
       </main>
     </div>
   );

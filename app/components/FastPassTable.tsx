@@ -1,6 +1,15 @@
+"use client";
+
+import { AnimatePresence, motion } from "framer-motion";
 import { Ticket } from "lucide-react";
 
-import { attractions, transactions, users } from "@/src/lib/mockDb";
+import { attractions, users } from "@/src/lib/mockDb";
+import type { Transaction } from "@/src/lib/types";
+
+type FastPassTableProps = {
+  rows: Transaction[];
+  highlightId: string | null;
+};
 
 function formatHour(timestamp: number): string {
   return new Date(timestamp).toLocaleTimeString("es-CO", {
@@ -9,13 +18,9 @@ function formatHour(timestamp: number): string {
   });
 }
 
-export function FastPassTable() {
+export function FastPassTable({ rows, highlightId }: FastPassTableProps) {
   const userById = new Map(users.map((u) => [u.id, u]));
   const attrById = new Map(attractions.map((a) => [a.id, a]));
-
-  const fastPasses = transactions
-    .filter((tx) => tx.tipo === "FastPass")
-    .slice(0, 5);
 
   return (
     <article className="rounded-2xl border border-white/30 bg-white/70 shadow-lg shadow-blue-900/5 backdrop-blur-md">
@@ -33,8 +38,9 @@ export function FastPassTable() {
             </h2>
           </div>
         </div>
-        <span className="text-[11px] text-slate-400">
-          {fastPasses.length} registros
+        <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-[11px] font-medium text-emerald-700 ring-1 ring-emerald-100">
+          <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+          {rows.length} activos
         </span>
       </header>
 
@@ -49,29 +55,50 @@ export function FastPassTable() {
             </tr>
           </thead>
           <tbody className="divide-y divide-white/40 text-slate-700">
-            {fastPasses.map((tx) => {
-              const user = userById.get(tx.userId);
-              const attraction = attrById.get(tx.attractionId);
-              return (
-                <tr key={tx.id} className="transition hover:bg-white/50">
-                  <td className="px-5 py-3 font-mono text-xs text-slate-500">
-                    {tx.userId}
-                    {user && (
-                      <span className="ml-2 font-sans text-[11px] text-slate-400">
-                        · Cat. {user.categoria}
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-5 py-3 font-medium text-slate-900">
-                    {attraction?.nombre ?? "—"}
-                  </td>
-                  <td className="px-5 py-3 text-slate-600">{tx.turno}</td>
-                  <td className="px-5 py-3 font-mono text-xs text-slate-500">
-                    {formatHour(tx.timestamp)}
-                  </td>
-                </tr>
-              );
-            })}
+            <AnimatePresence initial={false}>
+              {rows.map((tx) => {
+                const user = userById.get(tx.userId);
+                const attraction = attrById.get(tx.attractionId);
+                const isHighlighted = tx.id === highlightId;
+                return (
+                  <motion.tr
+                    key={tx.id}
+                    layout
+                    initial={{ opacity: 0, y: -8 }}
+                    animate={{
+                      opacity: 1,
+                      y: 0,
+                      backgroundColor: isHighlighted
+                        ? "rgba(16, 185, 129, 0.18)"
+                        : "rgba(255, 255, 255, 0)",
+                    }}
+                    exit={{ opacity: 0, y: 8 }}
+                    transition={{
+                      backgroundColor: { duration: 1.8, ease: "easeOut" },
+                      layout: { duration: 0.35, ease: "easeOut" },
+                      default: { duration: 0.35 },
+                    }}
+                    className="transition-colors"
+                  >
+                    <td className="px-5 py-3 font-mono text-xs text-slate-500">
+                      {tx.userId}
+                      {user && (
+                        <span className="ml-2 font-sans text-[11px] text-slate-400">
+                          · Cat. {user.categoria}
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-5 py-3 font-medium text-slate-900">
+                      {attraction?.nombre ?? "—"}
+                    </td>
+                    <td className="px-5 py-3 text-slate-600">{tx.turno}</td>
+                    <td className="px-5 py-3 font-mono text-xs text-slate-500">
+                      {formatHour(tx.timestamp)}
+                    </td>
+                  </motion.tr>
+                );
+              })}
+            </AnimatePresence>
           </tbody>
         </table>
       </div>

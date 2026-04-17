@@ -1,61 +1,98 @@
 "use client";
 
 import {
-  Bar,
-  BarChart,
-  Cell,
+  Area,
+  AreaChart,
+  CartesianGrid,
   ResponsiveContainer,
   Tooltip,
   XAxis,
   YAxis,
 } from "recharts";
 
-type ZoneData = {
-  zona: string;
-  porcentaje: number;
-  personas: number;
-  saturacion: "Baja" | "Media" | "Alta" | "Crítica";
+export type ZoneTrendPoint = {
+  hora: string;
+  atracciones: number;
+  piscinas: number;
+  restaurantes: number;
+  descanso: number;
 };
 
-const zones: ZoneData[] = [
-  { zona: "Atracciones", porcentaje: 40, personas: 1336, saturacion: "Crítica" },
-  { zona: "Piscinas", porcentaje: 35, personas: 1169, saturacion: "Alta" },
-  { zona: "Restaurantes", porcentaje: 15, personas: 501, saturacion: "Media" },
-  { zona: "Áreas de Descanso", porcentaje: 10, personas: 334, saturacion: "Baja" },
+type HeatmapChartProps = {
+  data: ZoneTrendPoint[];
+};
+
+const SERIES: {
+  key: keyof Omit<ZoneTrendPoint, "hora">;
+  label: string;
+  color: string;
+  gradientId: string;
+}[] = [
+  {
+    key: "atracciones",
+    label: "Atracciones",
+    color: "#ef4444",
+    gradientId: "gradAtracciones",
+  },
+  {
+    key: "piscinas",
+    label: "Piscinas",
+    color: "#f97316",
+    gradientId: "gradPiscinas",
+  },
+  {
+    key: "restaurantes",
+    label: "Restaurantes",
+    color: "#3b82f6",
+    gradientId: "gradRestaurantes",
+  },
+  {
+    key: "descanso",
+    label: "Áreas de Descanso",
+    color: "#22c55e",
+    gradientId: "gradDescanso",
+  },
 ];
 
-const SATURATION_COLOR: Record<ZoneData["saturacion"], string> = {
-  Baja: "#22c55e",
-  Media: "#3b82f6",
-  Alta: "#f97316",
-  Crítica: "#ef4444",
-};
-
-type TooltipPayload = {
-  payload: ZoneData;
+type TooltipPayloadItem = {
+  name: string;
+  value: number;
+  color: string;
+  dataKey: string;
 };
 
 function HeatmapTooltip({
   active,
   payload,
+  label,
 }: {
   active?: boolean;
-  payload?: TooltipPayload[];
+  payload?: TooltipPayloadItem[];
+  label?: string;
 }) {
   if (!active || !payload || payload.length === 0) return null;
-  const data = payload[0].payload;
   return (
-    <div className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs shadow-md">
-      <p className="font-semibold text-slate-900">{data.zona}</p>
-      <p className="mt-1 text-slate-600">
-        {data.personas.toLocaleString("es-CO")} personas · {data.porcentaje}%
-      </p>
-      <p className="mt-0.5 text-slate-400">Saturación: {data.saturacion}</p>
+    <div className="rounded-lg border border-white/50 bg-white/90 px-3 py-2 text-xs shadow-lg backdrop-blur">
+      <p className="font-semibold text-slate-900">{label}</p>
+      <ul className="mt-1 space-y-0.5">
+        {payload.map((p) => (
+          <li key={p.dataKey} className="flex items-center gap-2 text-slate-600">
+            <span
+              className="h-2 w-2 rounded-full"
+              style={{ backgroundColor: p.color }}
+            />
+            <span>{p.name}</span>
+            <span className="ml-auto font-mono text-slate-900">
+              {Math.round(p.value)}%
+            </span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
 
-export function HeatmapChart() {
+export function HeatmapChart({ data }: HeatmapChartProps) {
   return (
     <article className="rounded-2xl border border-white/30 bg-white/70 p-5 shadow-lg shadow-blue-900/5 backdrop-blur-md">
       <header className="flex items-start justify-between">
@@ -67,20 +104,20 @@ export function HeatmapChart() {
             Distribución del parque
           </h2>
           <p className="mt-1 text-xs text-slate-500">
-            Porcentaje de visitantes por zona (escala de saturación).
+            Evolución de la saturación por zona (últimos minutos).
           </p>
         </div>
         <div className="flex flex-wrap items-center gap-2">
-          {(Object.keys(SATURATION_COLOR) as ZoneData["saturacion"][]).map((k) => (
+          {SERIES.map((s) => (
             <span
-              key={k}
+              key={s.key}
               className="inline-flex items-center gap-1.5 rounded-full bg-white/60 px-2 py-1 text-[10px] font-medium text-slate-600 ring-1 ring-white/40 backdrop-blur"
             >
               <span
                 className="h-2 w-2 rounded-full"
-                style={{ backgroundColor: SATURATION_COLOR[k] }}
+                style={{ backgroundColor: s.color }}
               />
-              {k}
+              {s.label}
             </span>
           ))}
         </div>
@@ -88,13 +125,33 @@ export function HeatmapChart() {
 
       <div className="mt-5 h-72 w-full">
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={zones}
+          <AreaChart
+            data={data}
             margin={{ top: 10, right: 20, left: 0, bottom: 10 }}
           >
+            <defs>
+              {SERIES.map((s) => (
+                <linearGradient
+                  key={s.gradientId}
+                  id={s.gradientId}
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop offset="0%" stopColor={s.color} stopOpacity={0.45} />
+                  <stop offset="100%" stopColor={s.color} stopOpacity={0.02} />
+                </linearGradient>
+              ))}
+            </defs>
+            <CartesianGrid
+              stroke="#e2e8f0"
+              strokeDasharray="3 6"
+              vertical={false}
+            />
             <XAxis
-              dataKey="zona"
-              tick={{ fill: "#64748b", fontSize: 12 }}
+              dataKey="hora"
+              tick={{ fill: "#64748b", fontSize: 11 }}
               axisLine={{ stroke: "#e2e8f0" }}
               tickLine={false}
             />
@@ -103,20 +160,26 @@ export function HeatmapChart() {
               axisLine={{ stroke: "#e2e8f0" }}
               tickLine={false}
               unit="%"
+              domain={[0, 100]}
             />
             <Tooltip
-              cursor={{ fill: "rgba(99, 102, 241, 0.06)" }}
+              cursor={{ stroke: "#94a3b8", strokeDasharray: "3 3" }}
               content={<HeatmapTooltip />}
             />
-            <Bar dataKey="porcentaje" radius={[6, 6, 0, 0]}>
-              {zones.map((zone) => (
-                <Cell
-                  key={zone.zona}
-                  fill={SATURATION_COLOR[zone.saturacion]}
-                />
-              ))}
-            </Bar>
-          </BarChart>
+            {SERIES.map((s) => (
+              <Area
+                key={s.key}
+                type="monotone"
+                dataKey={s.key}
+                name={s.label}
+                stroke={s.color}
+                strokeWidth={2}
+                fill={`url(#${s.gradientId})`}
+                isAnimationActive
+                animationDuration={800}
+              />
+            ))}
+          </AreaChart>
         </ResponsiveContainer>
       </div>
     </article>

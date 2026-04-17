@@ -18,8 +18,8 @@ export function FastPassTable() {
     .slice(0, 5);
 
   return (
-    <article className="rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <header className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+    <article className="rounded-2xl border border-white/30 bg-white/70 shadow-lg shadow-blue-900/5 backdrop-blur-md">
+      <header className="flex items-center justify-between border-b border-white/40 px-5 py-4">
         <div className="flex items-center gap-2">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100">
             <Ticket className="h-4 w-4" aria-hidden />
@@ -40,7 +40,7 @@ export function FastPassTable() {
 
       <div className="overflow-hidden">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500">
+          <thead className="bg-white/40 text-[11px] uppercase tracking-wider text-slate-500 backdrop-blur">
             <tr>
               <th className="px-5 py-3 font-medium">ID Usuario</th>
               <th className="px-5 py-3 font-medium">Atracción</th>
@@ -48,12 +48,12 @@ export function FastPassTable() {
               <th className="px-5 py-3 font-medium">Hora de redención</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-100 text-slate-700">
+          <tbody className="divide-y divide-white/40 text-slate-700">
             {fastPasses.map((tx) => {
               const user = userById.get(tx.userId);
               const attraction = attrById.get(tx.attractionId);
               return (
-                <tr key={tx.id} className="transition hover:bg-slate-50">
+                <tr key={tx.id} className="transition hover:bg-white/50">
                   <td className="px-5 py-3 font-mono text-xs text-slate-500">
                     {tx.userId}
                     {user && (

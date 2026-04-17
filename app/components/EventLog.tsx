@@ -57,8 +57,8 @@ export function EventLog() {
   const entries = buildEntries();
 
   return (
-    <aside className="flex h-full flex-col rounded-2xl border border-slate-200 bg-white shadow-sm">
-      <header className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+    <aside className="flex h-full flex-col rounded-2xl border border-white/30 bg-white/70 shadow-lg shadow-blue-900/5 backdrop-blur-md">
+      <header className="flex items-center justify-between border-b border-white/40 px-5 py-4">
         <div>
           <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
             Log de eventos
@@ -71,7 +71,7 @@ export function EventLog() {
         </span>
       </header>
 
-      <ul className="flex flex-1 flex-col divide-y divide-slate-100 overflow-auto">
+      <ul className="flex flex-1 flex-col divide-y divide-white/40 overflow-auto">
         {entries.map((entry) => {
           const Icon = entry.icon;
           return (
@@ -95,7 +95,7 @@ export function EventLog() {
         })}
       </ul>
 
-      <footer className="flex items-center gap-2 border-t border-slate-100 px-5 py-3 text-[11px] text-slate-400">
+      <footer className="flex items-center gap-2 border-t border-white/40 px-5 py-3 text-[11px] text-slate-400">
         <Activity className="h-3.5 w-3.5" aria-hidden />
         Fuente: mockDb · refresco simulado
       </footer>

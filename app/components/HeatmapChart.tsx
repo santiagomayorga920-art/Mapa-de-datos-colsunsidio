@@ -57,7 +57,7 @@ function HeatmapTooltip({
 
 export function HeatmapChart() {
   return (
-    <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+    <article className="rounded-2xl border border-white/30 bg-white/70 p-5 shadow-lg shadow-blue-900/5 backdrop-blur-md">
       <header className="flex items-start justify-between">
         <div>
           <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
@@ -74,7 +74,7 @@ export function HeatmapChart() {
           {(Object.keys(SATURATION_COLOR) as ZoneData["saturacion"][]).map((k) => (
             <span
               key={k}
-              className="inline-flex items-center gap-1.5 rounded-full bg-slate-50 px-2 py-1 text-[10px] font-medium text-slate-600 ring-1 ring-slate-100"
+              className="inline-flex items-center gap-1.5 rounded-full bg-white/60 px-2 py-1 text-[10px] font-medium text-slate-600 ring-1 ring-white/40 backdrop-blur"
             >
               <span
                 className="h-2 w-2 rounded-full"

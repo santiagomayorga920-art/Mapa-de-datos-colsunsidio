@@ -95,7 +95,7 @@ const stages: PipelineStage[] = [
 function StageCard({ card }: { card: PipelineCard }) {
   const Icon = card.icon;
   return (
-    <article className="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm transition hover:shadow-md">
+    <article className="group rounded-xl border border-white/30 bg-white/70 p-4 shadow-lg shadow-blue-900/5 backdrop-blur-md transition hover:bg-white/80 hover:shadow-xl hover:shadow-blue-900/10">
       <div
         className={`inline-flex h-9 w-9 items-center justify-center rounded-lg ring-1 ${card.accent}`}
       >
@@ -131,7 +131,7 @@ function StageColumn({ stage }: { stage: PipelineStage }) {
 
 export function DataFlowPipeline() {
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white/60 p-6 shadow-sm backdrop-blur">
+    <div className="rounded-2xl border border-white/30 bg-white/70 p-6 shadow-lg shadow-blue-900/5 backdrop-blur-md">
       <header className="mb-6">
         <p className="text-xs font-medium uppercase tracking-widest text-indigo-600">
           Pipeline operacional
@@ -151,7 +151,7 @@ export function DataFlowPipeline() {
             <StageColumn stage={stage} />
             {index < stages.length - 1 && (
               <div className="flex items-center">
-                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-400 shadow-sm">
+                <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/30 bg-white/70 text-slate-500 shadow-lg shadow-blue-900/5 backdrop-blur-md">
                   <ArrowRight className="h-4 w-4" aria-hidden />
                 </div>
               </div>

@@ -18,8 +18,8 @@ export default function Home() {
   ).length;
 
   return (
-    <div className="flex min-h-screen flex-col bg-[radial-gradient(circle_at_top,_#eef2ff_0%,_#f8fafc_55%,_#f1f5f9_100%)]">
-      <header className="border-b border-slate-200 bg-white/70 backdrop-blur">
+    <div className="flex min-h-screen flex-col">
+      <header className="border-b border-white/30 bg-white/60 shadow-sm shadow-blue-900/5 backdrop-blur-md">
         <div className="mx-auto flex w-full max-w-[1600px] items-center justify-between px-6 py-4">
           <div className="flex items-center gap-3">
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-sm">
@@ -36,7 +36,7 @@ export default function Home() {
           </div>
 
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 shadow-sm">
+            <div className="flex items-center gap-2 rounded-lg border border-white/30 bg-white/70 px-3 py-1.5 shadow-lg shadow-blue-900/5 backdrop-blur-md">
               <Gauge className="h-4 w-4 text-indigo-600" aria-hidden />
               <div className="text-xs">
                 <p className="text-slate-400">Aforo global</p>
@@ -46,7 +46,7 @@ export default function Home() {
                 </p>
               </div>
             </div>
-            <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-1.5 shadow-sm">
+            <div className="flex items-center gap-2 rounded-lg border border-white/30 bg-white/70 px-3 py-1.5 shadow-lg shadow-blue-900/5 backdrop-blur-md">
               <Users className="h-4 w-4 text-emerald-600" aria-hidden />
               <div className="text-xs">
                 <p className="text-slate-400">Afiliados activos</p>

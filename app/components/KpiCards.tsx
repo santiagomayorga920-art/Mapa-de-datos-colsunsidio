@@ -21,7 +21,7 @@ export function KpiCards() {
 
   return (
     <section className="grid grid-cols-1 gap-4 md:grid-cols-3">
-      <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <article className="rounded-2xl border border-white/30 bg-white/70 p-5 shadow-lg shadow-blue-900/5 backdrop-blur-md">
         <header className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100">
@@ -64,7 +64,7 @@ export function KpiCards() {
         </p>
       </article>
 
-      <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <article className="rounded-2xl border border-white/30 bg-white/70 p-5 shadow-lg shadow-blue-900/5 backdrop-blur-md">
         <header className="flex items-center gap-2">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100">
             <Users className="h-4 w-4" aria-hidden />
@@ -81,7 +81,7 @@ export function KpiCards() {
           Personas que aún pueden ingresar hoy.
         </p>
 
-        <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-slate-100 pt-3">
+        <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-white/40 pt-3">
           <div>
             <dt className="text-[11px] uppercase tracking-wider text-slate-400">
               Físicos
@@ -101,7 +101,7 @@ export function KpiCards() {
         </dl>
       </article>
 
-      <article className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <article className="rounded-2xl border border-white/30 bg-white/70 p-5 shadow-lg shadow-blue-900/5 backdrop-blur-md">
         <header className="flex items-center gap-2">
           <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 ring-1 ring-amber-100">
             <CircleDollarSign className="h-4 w-4" aria-hidden />
@@ -118,7 +118,7 @@ export function KpiCards() {
           Compras de FastPass y restaurantes vía aplicación.
         </p>
 
-        <div className="mt-4 flex items-center gap-2 rounded-lg bg-slate-50 px-3 py-2 text-[11px] text-slate-600 ring-1 ring-slate-100">
+        <div className="mt-4 flex items-center gap-2 rounded-lg bg-white/60 px-3 py-2 text-[11px] text-slate-600 ring-1 ring-white/40 backdrop-blur">
           <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
           +12,4% vs. ayer
         </div>

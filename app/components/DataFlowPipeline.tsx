@@ -1,8 +1,11 @@
 "use client";
 
+import type React from "react";
 import { motion } from "framer-motion";
 import {
+  Bot,
   Building2,
+  Cloud,
   Cpu,
   Database,
   MapPinned,
@@ -21,7 +24,9 @@ type NodeId =
   | "brain"
   | "operationalDb"
   | "salidaQr"
-  | "salidaHeat";
+  | "salidaHeat"
+  | "nlp"
+  | "dataLake";
 
 type NodeDef = {
   id: NodeId;
@@ -30,7 +35,7 @@ type NodeDef = {
   icon: LucideIcon;
   accent: string;
   iconBg: string;
-  payload: Record<string, string | number>;
+  payload: Record<string, string | number | boolean>;
   xPct: number;
   yPct: number;
   widthPct: number;
@@ -41,6 +46,7 @@ type Edge = {
   to: NodeId;
   color: string;
   delay: number;
+  dashed?: boolean;
 };
 
 const NODES: NodeDef[] = [
@@ -57,7 +63,7 @@ const NODES: NodeDef[] = [
     },
     xPct: 1,
     yPct: 37,
-    widthPct: 14,
+    widthPct: 12,
   },
   {
     id: "ingestaApp",
@@ -72,9 +78,9 @@ const NODES: NodeDef[] = [
       action: "scan",
       src: "app",
     },
-    xPct: 17,
+    xPct: 15,
     yPct: 8,
-    widthPct: 14,
+    widthPct: 12,
   },
   {
     id: "ingestaGate",
@@ -89,9 +95,9 @@ const NODES: NodeDef[] = [
       action: "scan",
       src: "gate",
     },
-    xPct: 17,
+    xPct: 15,
     yPct: 66,
-    widthPct: 14,
+    widthPct: 12,
   },
   {
     id: "gateway",
@@ -103,9 +109,9 @@ const NODES: NodeDef[] = [
     payload: {
       route_to: "fastpass_engine | guest_db",
     },
-    xPct: 33,
+    xPct: 29,
     yPct: 37,
-    widthPct: 14,
+    widthPct: 12,
   },
   {
     id: "brain",
@@ -119,9 +125,9 @@ const NODES: NodeDef[] = [
       load: "caliente",
       latency_ms: 42,
     },
-    xPct: 49,
+    xPct: 43,
     yPct: 8,
-    widthPct: 14,
+    widthPct: 12,
   },
   {
     id: "operationalDb",
@@ -134,9 +140,9 @@ const NODES: NodeDef[] = [
       type: "guest_log",
       action: "store_analytics",
     },
-    xPct: 49,
+    xPct: 43,
     yPct: 66,
-    widthPct: 14,
+    widthPct: 12,
   },
   {
     id: "salidaQr",
@@ -150,9 +156,9 @@ const NODES: NodeDef[] = [
       token: "QR_89X",
       cooldown: "45m",
     },
-    xPct: 83,
+    xPct: 57,
     yPct: 8,
-    widthPct: 14,
+    widthPct: 12,
   },
   {
     id: "salidaHeat",
@@ -166,9 +172,40 @@ const NODES: NodeDef[] = [
       delta: 1,
       ts: "live",
     },
-    xPct: 83,
+    xPct: 57,
     yPct: 66,
-    widthPct: 14,
+    widthPct: 12,
+  },
+  {
+    id: "nlp",
+    title: "Motor NLP",
+    subtitle: "API Chatbot (read-only)",
+    icon: Bot,
+    accent: "border-violet-200/60",
+    iconBg: "bg-violet-50 text-violet-600 ring-violet-100",
+    payload: {
+      model: "LLM_v4",
+      intent: "wait_time",
+      read_only: true,
+    },
+    xPct: 72,
+    yPct: 37,
+    widthPct: 12,
+  },
+  {
+    id: "dataLake",
+    title: "Data Lake",
+    subtitle: "Cold storage · analytics",
+    icon: Cloud,
+    accent: "border-cyan-200/60",
+    iconBg: "bg-cyan-50 text-cyan-600 ring-cyan-100",
+    payload: {
+      bucket: "piscilago_data",
+      type: "cold_storage",
+    },
+    xPct: 86,
+    yPct: 37,
+    widthPct: 13,
   },
 ];
 
@@ -182,6 +219,10 @@ const EDGES: Edge[] = [
   { from: "brain", to: "salidaQr", color: "#f59e0b", delay: 2.4 },
   { from: "brain", to: "salidaHeat", color: "#a855f7", delay: 2.8 },
   { from: "operationalDb", to: "salidaHeat", color: "#ec4899", delay: 3.2 },
+  { from: "operationalDb", to: "nlp", color: "#8b5cf6", delay: 3.4, dashed: true },
+  { from: "salidaQr", to: "dataLake", color: "#06b6d4", delay: 3.6 },
+  { from: "salidaHeat", to: "dataLake", color: "#06b6d4", delay: 4.0 },
+  { from: "operationalDb", to: "dataLake", color: "#06b6d4", delay: 4.4 },
 ];
 
 function nodeAnchor(id: NodeId, side: "right" | "left"): { x: number; y: number } {
@@ -192,7 +233,21 @@ function nodeAnchor(id: NodeId, side: "right" | "left"): { x: number; y: number 
   return { x, y };
 }
 
-function PayloadCode({ payload }: { payload: Record<string, string | number> }) {
+function formatValue(value: string | number | boolean): React.ReactElement {
+  if (typeof value === "number") {
+    return <span className="text-amber-300">{value}</span>;
+  }
+  if (typeof value === "boolean") {
+    return <span className="text-purple-300">{String(value)}</span>;
+  }
+  return <span className="text-emerald-300">&quot;{value}&quot;</span>;
+}
+
+function PayloadCode({
+  payload,
+}: {
+  payload: Record<string, string | number | boolean>;
+}) {
   return (
     <pre className="mt-3 overflow-hidden rounded-lg bg-slate-900/90 px-3 py-2 font-mono text-[10.5px] leading-5 text-slate-100 shadow-inner">
       <span className="text-slate-500">{"{"}</span>
@@ -200,11 +255,7 @@ function PayloadCode({ payload }: { payload: Record<string, string | number> }) 
         <span key={key} className="block pl-3">
           <span className="text-sky-300">&quot;{key}&quot;</span>
           <span className="text-slate-400">: </span>
-          {typeof value === "number" ? (
-            <span className="text-amber-300">{value}</span>
-          ) : (
-            <span className="text-emerald-300">&quot;{value}&quot;</span>
-          )}
+          {formatValue(value)}
           {i < arr.length - 1 && <span className="text-slate-400">,</span>}
         </span>
       ))}
@@ -275,7 +326,9 @@ function edgePath(fromId: NodeId, toId: NodeId): string {
   return `M ${start.x} ${start.y} C ${midX} ${start.y}, ${midX} ${end.y}, ${end.x} ${end.y}`;
 }
 
-function EdgePulse({ edge, pathId }: { edge: Edge; pathId: string }) {
+function EdgePulse({ edge }: { edge: Edge }) {
+  const path = edgePath(edge.from, edge.to);
+  const duration = edge.dashed ? 3.2 : 2.8;
   return (
     <>
       <motion.circle
@@ -288,34 +341,33 @@ function EdgePulse({ edge, pathId }: { edge: Edge; pathId: string }) {
           opacity: [0, 1, 1, 0],
         }}
         transition={{
-          duration: 2.4,
+          duration,
           repeat: Infinity,
           ease: "easeInOut",
           delay: edge.delay,
           times: [0, 0.1, 0.9, 1],
         }}
         style={{
-          offsetPath: `path("${edgePath(edge.from, edge.to)}")`,
+          offsetPath: `path("${path}")`,
           offsetRotate: "0deg",
         }}
       />
       <motion.circle
         r={0.7}
         fill={edge.color}
-        opacity={0.5}
+        opacity={edge.dashed ? 0.3 : 0.5}
         initial={{ offsetDistance: "0%" }}
         animate={{ offsetDistance: ["0%", "100%"] }}
         transition={{
-          duration: 2.4,
+          duration,
           repeat: Infinity,
           ease: "easeInOut",
           delay: edge.delay + 0.25,
         }}
         style={{
-          offsetPath: `path("${edgePath(edge.from, edge.to)}")`,
+          offsetPath: `path("${path}")`,
         }}
       />
-      <use href={`#${pathId}`} />
     </>
   );
 }
@@ -325,59 +377,60 @@ export function DataFlowPipeline() {
     <div className="rounded-2xl border border-white/30 bg-white/70 p-6 shadow-lg shadow-blue-900/5 backdrop-blur-md">
       <header className="mb-4">
         <p className="text-xs font-medium uppercase tracking-widest text-indigo-600">
-          Pipeline operacional
+          Pipeline operacional · End-to-End
         </p>
         <h1 className="mt-1 text-xl font-semibold text-slate-900">
-          Red de nodos · ingesta → decisión → salida
+          Red de nodos · CRM → decisión → Data Lake
         </h1>
         <p className="mt-1 text-sm text-slate-500">
-          Cada pulso representa un evento atravesando el motor de reglas en tiempo real.
+          Cada pulso representa un evento. La línea punteada indica lectura
+          analítica del chatbot (sin escritura).
         </p>
       </header>
 
       <div className="-mx-2 overflow-x-auto px-2 pb-2">
-        <div className="relative min-w-[1400px] rounded-xl border border-white/40 bg-gradient-to-br from-slate-50/60 via-white/40 to-indigo-50/40 aspect-[16/7] shadow-inner shadow-blue-900/5">
+        <div className="relative min-w-[1600px] rounded-xl border border-white/40 bg-gradient-to-br from-slate-50/60 via-white/40 to-indigo-50/40 aspect-[16/7] shadow-inner shadow-blue-900/5">
           <svg
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
             className="absolute inset-0 h-full w-full"
           >
-          <defs>
+            <defs>
+              {EDGES.map((e) => (
+                <linearGradient
+                  key={`grad-${e.from}-${e.to}`}
+                  id={`grad-${e.from}-${e.to}`}
+                  x1="0%"
+                  y1="0%"
+                  x2="100%"
+                  y2="0%"
+                >
+                  <stop offset="0%" stopColor={e.color} stopOpacity={0.15} />
+                  <stop
+                    offset="50%"
+                    stopColor={e.color}
+                    stopOpacity={e.dashed ? 0.4 : 0.65}
+                  />
+                  <stop offset="100%" stopColor={e.color} stopOpacity={0.15} />
+                </linearGradient>
+              ))}
+            </defs>
+
             {EDGES.map((e) => (
-              <linearGradient
-                key={`grad-${e.from}-${e.to}`}
-                id={`grad-${e.from}-${e.to}`}
-                x1="0%"
-                y1="0%"
-                x2="100%"
-                y2="0%"
-              >
-                <stop offset="0%" stopColor={e.color} stopOpacity={0.15} />
-                <stop offset="50%" stopColor={e.color} stopOpacity={0.65} />
-                <stop offset="100%" stopColor={e.color} stopOpacity={0.15} />
-              </linearGradient>
+              <path
+                key={`line-${e.from}-${e.to}`}
+                d={edgePath(e.from, e.to)}
+                stroke={`url(#grad-${e.from}-${e.to})`}
+                strokeWidth={e.dashed ? 0.35 : 0.45}
+                strokeDasharray={e.dashed ? "0.8 1.6" : "1.2 0.8"}
+                fill="none"
+                vectorEffect="non-scaling-stroke"
+              />
             ))}
-          </defs>
 
-          {EDGES.map((e) => (
-            <path
-              key={`line-${e.from}-${e.to}`}
-              d={edgePath(e.from, e.to)}
-              stroke={`url(#grad-${e.from}-${e.to})`}
-              strokeWidth={0.45}
-              strokeDasharray="1.2 0.8"
-              fill="none"
-              vectorEffect="non-scaling-stroke"
-            />
-          ))}
-
-          {EDGES.map((e) => (
-            <EdgePulse
-              key={`pulse-${e.from}-${e.to}`}
-              edge={e}
-              pathId={`line-${e.from}-${e.to}`}
-            />
-          ))}
+            {EDGES.map((e) => (
+              <EdgePulse key={`pulse-${e.from}-${e.to}`} edge={e} />
+            ))}
           </svg>
 
           {NODES.map((node) => (
@@ -388,7 +441,10 @@ export function DataFlowPipeline() {
 
       <footer className="mt-4 flex flex-wrap items-center gap-4 text-[11px] text-slate-500">
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-sky-500" /> App
+          <span className="h-1.5 w-1.5 rounded-full bg-teal-500" /> CRM
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-sky-500" /> Ingesta App
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Taquilla
@@ -397,10 +453,20 @@ export function DataFlowPipeline() {
           <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" /> Motor de reglas
         </span>
         <span className="inline-flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-rose-500" /> BD operativa
+        </span>
+        <span className="inline-flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-amber-500" /> FastPass emitido
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-fuchsia-500" /> Heatmap actualizado
+          <span className="h-1.5 w-1.5 rounded-full bg-fuchsia-500" /> Heatmap
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-1 w-4 border-t border-dashed border-violet-500" />
+          Lectura chatbot (NLP)
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-cyan-500" /> Data Lake
         </span>
       </footer>
     </div>

@@ -46,9 +46,9 @@ const NODES: NodeDef[] = [
       action: "scan",
       src: "app",
     },
-    xPct: 3,
+    xPct: 2,
     yPct: 12,
-    widthPct: 22,
+    widthPct: 17,
   },
   {
     id: "ingestaGate",
@@ -63,9 +63,9 @@ const NODES: NodeDef[] = [
       action: "scan",
       src: "gate",
     },
-    xPct: 3,
+    xPct: 2,
     yPct: 62,
-    widthPct: 22,
+    widthPct: 17,
   },
   {
     id: "brain",
@@ -79,9 +79,9 @@ const NODES: NodeDef[] = [
       load: "caliente",
       latency_ms: 42,
     },
-    xPct: 39,
+    xPct: 42,
     yPct: 32,
-    widthPct: 22,
+    widthPct: 17,
   },
   {
     id: "salidaQr",
@@ -95,9 +95,9 @@ const NODES: NodeDef[] = [
       token: "QR_89X",
       cooldown: "45m",
     },
-    xPct: 75,
+    xPct: 82,
     yPct: 12,
-    widthPct: 22,
+    widthPct: 17,
   },
   {
     id: "salidaHeat",
@@ -111,9 +111,9 @@ const NODES: NodeDef[] = [
       delta: 1,
       ts: "live",
     },
-    xPct: 75,
+    xPct: 82,
     yPct: 62,
-    widthPct: 22,
+    widthPct: 17,
   },
 ];
 
@@ -275,12 +275,13 @@ export function DataFlowPipeline() {
         </p>
       </header>
 
-      <div className="relative w-full overflow-hidden rounded-xl border border-white/40 bg-gradient-to-br from-slate-50/60 via-white/40 to-indigo-50/40 aspect-[16/9]">
-        <svg
-          viewBox="0 0 100 100"
-          preserveAspectRatio="none"
-          className="absolute inset-0 h-full w-full"
-        >
+      <div className="-mx-2 overflow-x-auto px-2 pb-2">
+        <div className="relative min-w-[1400px] rounded-xl border border-white/40 bg-gradient-to-br from-slate-50/60 via-white/40 to-indigo-50/40 aspect-[16/7] shadow-inner shadow-blue-900/5">
+          <svg
+            viewBox="0 0 100 100"
+            preserveAspectRatio="none"
+            className="absolute inset-0 h-full w-full"
+          >
           <defs>
             {EDGES.map((e) => (
               <linearGradient
@@ -317,11 +318,12 @@ export function DataFlowPipeline() {
               pathId={`line-${e.from}-${e.to}`}
             />
           ))}
-        </svg>
+          </svg>
 
-        {NODES.map((node) => (
-          <Node key={node.id} node={node} isBrain={node.id === "brain"} />
-        ))}
+          {NODES.map((node) => (
+            <Node key={node.id} node={node} isBrain={node.id === "brain"} />
+          ))}
+        </div>
       </div>
 
       <footer className="mt-4 flex flex-wrap items-center gap-4 text-[11px] text-slate-500">

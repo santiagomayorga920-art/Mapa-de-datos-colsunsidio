@@ -1,0 +1,80 @@
+import { Ticket } from "lucide-react";
+
+import { attractions, transactions, users } from "@/src/lib/mockDb";
+
+function formatHour(timestamp: number): string {
+  return new Date(timestamp).toLocaleTimeString("es-CO", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+}
+
+export function FastPassTable() {
+  const userById = new Map(users.map((u) => [u.id, u]));
+  const attrById = new Map(attractions.map((a) => [a.id, a]));
+
+  const fastPasses = transactions
+    .filter((tx) => tx.tipo === "FastPass")
+    .slice(0, 5);
+
+  return (
+    <article className="rounded-2xl border border-slate-200 bg-white shadow-sm">
+      <header className="flex items-center justify-between border-b border-slate-100 px-5 py-4">
+        <div className="flex items-center gap-2">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 ring-1 ring-indigo-100">
+            <Ticket className="h-4 w-4" aria-hidden />
+          </span>
+          <div>
+            <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
+              Reservas activas
+            </p>
+            <h2 className="text-sm font-semibold text-slate-900">
+              FastPass generados
+            </h2>
+          </div>
+        </div>
+        <span className="text-[11px] text-slate-400">
+          {fastPasses.length} registros
+        </span>
+      </header>
+
+      <div className="overflow-hidden">
+        <table className="w-full text-left text-sm">
+          <thead className="bg-slate-50 text-[11px] uppercase tracking-wider text-slate-500">
+            <tr>
+              <th className="px-5 py-3 font-medium">ID Usuario</th>
+              <th className="px-5 py-3 font-medium">Atracción</th>
+              <th className="px-5 py-3 font-medium">Turno</th>
+              <th className="px-5 py-3 font-medium">Hora de redención</th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-slate-100 text-slate-700">
+            {fastPasses.map((tx) => {
+              const user = userById.get(tx.userId);
+              const attraction = attrById.get(tx.attractionId);
+              return (
+                <tr key={tx.id} className="transition hover:bg-slate-50">
+                  <td className="px-5 py-3 font-mono text-xs text-slate-500">
+                    {tx.userId}
+                    {user && (
+                      <span className="ml-2 font-sans text-[11px] text-slate-400">
+                        · Cat. {user.categoria}
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-5 py-3 font-medium text-slate-900">
+                    {attraction?.nombre ?? "—"}
+                  </td>
+                  <td className="px-5 py-3 text-slate-600">{tx.turno}</td>
+                  <td className="px-5 py-3 font-mono text-xs text-slate-500">
+                    {formatHour(tx.timestamp)}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </article>
+  );
+}

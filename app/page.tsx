@@ -1,4 +1,5 @@
-import { Gauge, Users, Waves } from "lucide-react";
+import Link from "next/link";
+import { ArrowUpRight, Gauge, Users, Waves } from "lucide-react";
 
 import { DataFlowPipeline } from "./components/DataFlowPipeline";
 import { EventLog } from "./components/EventLog";
@@ -54,6 +55,13 @@ export default function Home() {
                 </p>
               </div>
             </div>
+            <Link
+              href="/dashboard"
+              className="inline-flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-500"
+            >
+              Panel gerencial
+              <ArrowUpRight className="h-3.5 w-3.5" aria-hidden />
+            </Link>
           </div>
         </div>
       </header>

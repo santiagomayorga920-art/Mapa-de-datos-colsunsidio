@@ -4,7 +4,11 @@ import type React from "react";
 import { motion } from "framer-motion";
 import {
   Building2,
+  Cpu,
   Database,
+  Gauge,
+  QrCode,
+  Radio,
   ShieldCheck,
   Smartphone,
   UsersRound,
@@ -18,7 +22,11 @@ type NodeId =
   | "gateway"
   | "identityBroker"
   | "crm"
-  | "coreDb";
+  | "coreDb"
+  | "eventBus"
+  | "fastpassEngine"
+  | "heatmapEngine"
+  | "salidaQr";
 
 type NodeDef = {
   id: NodeId;
@@ -56,7 +64,7 @@ const LANES: Lane[] = [
     step: "Capa 1",
     label: "Ingesta",
     xPct: 0,
-    widthPct: 25,
+    widthPct: 14,
     tint: "bg-sky-100/25",
     border: "border-sky-200/40",
     dotColor: "bg-sky-400",
@@ -64,17 +72,17 @@ const LANES: Lane[] = [
   {
     step: "Capa 2",
     label: "Enrutamiento",
-    xPct: 25,
-    widthPct: 25,
+    xPct: 14,
+    widthPct: 14,
     tint: "bg-slate-100/25",
     border: "border-slate-200/40",
     dotColor: "bg-slate-400",
   },
   {
     step: "Capa 2",
-    label: "Seguridad · Identity Broker",
-    xPct: 50,
-    widthPct: 25,
+    label: "Seguridad",
+    xPct: 28,
+    widthPct: 14,
     tint: "bg-violet-100/25",
     border: "border-violet-200/40",
     dotColor: "bg-violet-400",
@@ -82,11 +90,29 @@ const LANES: Lane[] = [
   {
     step: "Capa 2",
     label: "Validación",
-    xPct: 75,
-    widthPct: 25,
+    xPct: 42,
+    widthPct: 14,
     tint: "bg-emerald-100/25",
     border: "border-emerald-200/40",
     dotColor: "bg-emerald-400",
+  },
+  {
+    step: "Capa 3",
+    label: "Event Bus · Kafka",
+    xPct: 56,
+    widthPct: 14,
+    tint: "bg-orange-100/25",
+    border: "border-orange-200/40",
+    dotColor: "bg-orange-400",
+  },
+  {
+    step: "Capa 4",
+    label: "Operaciones",
+    xPct: 70,
+    widthPct: 30,
+    tint: "bg-indigo-100/25",
+    border: "border-indigo-200/40",
+    dotColor: "bg-indigo-400",
   },
 ];
 
@@ -99,13 +125,13 @@ const NODES: NodeDef[] = [
     accent: "border-sky-200/60",
     iconBg: "bg-sky-50 text-sky-600 ring-sky-100",
     payload: {
-      id: "user_123",
-      action: "request_fastpass",
+      topic: "ingress.app",
+      user_id: "user_123",
       src: "app",
     },
-    xPct: 5,
+    xPct: 2,
     yPct: 10,
-    widthPct: 16,
+    widthPct: 11,
   },
   {
     id: "ingestaGate",
@@ -115,13 +141,13 @@ const NODES: NodeDef[] = [
     accent: "border-emerald-200/60",
     iconBg: "bg-emerald-50 text-emerald-600 ring-emerald-100",
     payload: {
-      id: "user_456",
-      action: "request_fastpass",
+      topic: "ingress.gate",
+      user_id: "user_456",
       src: "gate",
     },
-    xPct: 5,
+    xPct: 2,
     yPct: 66,
-    widthPct: 16,
+    widthPct: 11,
   },
   {
     id: "gateway",
@@ -135,9 +161,9 @@ const NODES: NodeDef[] = [
       tls: "mTLS",
       rate_limit: "420/min",
     },
-    xPct: 30,
+    xPct: 16,
     yPct: 37,
-    widthPct: 16,
+    widthPct: 11,
   },
   {
     id: "identityBroker",
@@ -151,9 +177,9 @@ const NODES: NodeDef[] = [
       branch: "affiliate | guest",
       ttl_s: 900,
     },
-    xPct: 55,
+    xPct: 30,
     yPct: 37,
-    widthPct: 16,
+    widthPct: 11,
   },
   {
     id: "crm",
@@ -164,12 +190,11 @@ const NODES: NodeDef[] = [
     iconBg: "bg-teal-50 text-teal-600 ring-teal-100",
     payload: {
       source: "CRM_Master",
-      query: "validate_user",
       category: "A | B | C",
     },
-    xPct: 80,
+    xPct: 44,
     yPct: 10,
-    widthPct: 18,
+    widthPct: 11,
   },
   {
     id: "coreDb",
@@ -181,11 +206,74 @@ const NODES: NodeDef[] = [
     payload: {
       db: "postgres",
       action: "upsert_guest",
-      pool: "operational",
     },
-    xPct: 80,
+    xPct: 44,
     yPct: 66,
-    widthPct: 18,
+    widthPct: 11,
+  },
+  {
+    id: "eventBus",
+    title: "Event Bus · Kafka",
+    subtitle: "Sistema nervioso de eventos",
+    icon: Radio,
+    accent: "border-orange-200/60",
+    iconBg: "bg-orange-50 text-orange-600 ring-orange-100",
+    payload: {
+      broker: "kafka",
+      topic: "user.validated",
+      partitions: 12,
+    },
+    xPct: 58,
+    yPct: 37,
+    widthPct: 11,
+  },
+  {
+    id: "fastpassEngine",
+    title: "Motor de FastPass",
+    subtitle: "Emisión y cooldown",
+    icon: Cpu,
+    accent: "border-indigo-200/60",
+    iconBg: "bg-indigo-50 text-indigo-600 ring-indigo-100",
+    payload: {
+      topic: "fastpass.issue",
+      cooldown_m: 45,
+      quota: "daily",
+    },
+    xPct: 72,
+    yPct: 10,
+    widthPct: 12,
+  },
+  {
+    id: "heatmapEngine",
+    title: "Motor de Aforo",
+    subtitle: "Heatmap en vivo",
+    icon: Gauge,
+    accent: "border-fuchsia-200/60",
+    iconBg: "bg-fuchsia-50 text-fuchsia-600 ring-fuchsia-100",
+    payload: {
+      topic: "capacity.update",
+      zone: "atracciones",
+      delta: 1,
+    },
+    xPct: 72,
+    yPct: 66,
+    widthPct: 12,
+  },
+  {
+    id: "salidaQr",
+    title: "Salida · QR FastPass",
+    subtitle: "Token firmado",
+    icon: QrCode,
+    accent: "border-amber-200/60",
+    iconBg: "bg-amber-50 text-amber-600 ring-amber-100",
+    payload: {
+      status: "approved",
+      token: "QR_89X",
+      cooldown: "45m",
+    },
+    xPct: 86,
+    yPct: 10,
+    widthPct: 12,
   },
 ];
 
@@ -195,6 +283,10 @@ const EDGES: Edge[] = [
   { from: "gateway", to: "identityBroker", color: "#64748b", delay: 0.8 },
   { from: "identityBroker", to: "crm", color: "#14b8a6", delay: 1.2 },
   { from: "identityBroker", to: "coreDb", color: "#06b6d4", delay: 1.6 },
+  { from: "identityBroker", to: "eventBus", color: "#f97316", delay: 2.0 },
+  { from: "eventBus", to: "fastpassEngine", color: "#6366f1", delay: 2.4 },
+  { from: "eventBus", to: "heatmapEngine", color: "#d946ef", delay: 2.8 },
+  { from: "fastpassEngine", to: "salidaQr", color: "#f59e0b", delay: 3.2 },
 ];
 
 function nodeAnchor(id: NodeId, side: "right" | "left"): { x: number; y: number } {
@@ -236,14 +328,19 @@ function PayloadCode({
   );
 }
 
+type NodeStyle = "default" | "identity" | "bus";
+
 function Node({
   node,
-  isGlowing = false,
+  style = "default",
 }: {
   node: NodeDef;
-  isGlowing?: boolean;
+  style?: NodeStyle;
 }) {
   const Icon = node.icon;
+  const isGlowing = style !== "default";
+  const glowColor = style === "bus" ? "bg-orange-400/35" : "bg-violet-400/30";
+  const dotColor = style === "bus" ? "bg-orange-500" : "bg-violet-500";
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -262,7 +359,7 @@ function Node({
         {isGlowing && (
           <motion.div
             aria-hidden
-            className="pointer-events-none absolute -inset-1 rounded-2xl bg-violet-400/30 blur-xl"
+            className={`pointer-events-none absolute -inset-1 rounded-2xl blur-xl ${glowColor}`}
             animate={{ opacity: [0.25, 0.7, 0.25], scale: [0.95, 1.05, 0.95] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -284,7 +381,7 @@ function Node({
             </div>
             {isGlowing && (
               <motion.span
-                className="ml-auto inline-flex h-2 w-2 rounded-full bg-violet-500"
+                className={`ml-auto inline-flex h-2 w-2 rounded-full ${dotColor}`}
                 animate={{ opacity: [0.3, 1, 0.3], scale: [0.9, 1.15, 0.9] }}
                 transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
               />
@@ -368,25 +465,31 @@ function LaneColumn({ lane }: { lane: Lane }) {
   );
 }
 
+function nodeStyleFor(id: NodeId): NodeStyle {
+  if (id === "identityBroker") return "identity";
+  if (id === "eventBus") return "bus";
+  return "default";
+}
+
 export function DataFlowPipeline() {
   return (
     <div className="rounded-2xl border border-white/30 bg-white/70 p-6 shadow-lg shadow-blue-900/5 backdrop-blur-md">
       <header className="mb-4">
         <p className="text-xs font-medium uppercase tracking-widest text-indigo-600">
-          Pipeline operacional · arquitectura empresarial
+          Pipeline operacional · arquitectura orientada a eventos
         </p>
         <h1 className="mt-1 text-xl font-semibold text-slate-900">
-          Carriles de ingesta, enrutamiento y seguridad
+          Carriles end-to-end con Kafka Event Bus y motores operativos
         </h1>
         <p className="mt-1 text-sm text-slate-500">
-          Eventos fluyen de izquierda a derecha a través del API Gateway y el
-          Identity Broker, bifurcándose hacia CRM (afiliados) o BD Core (no
-          afiliados).
+          Tras la validación en el Identity Broker, se emite{" "}
+          <code className="font-mono text-[12px]">user.validated</code> al bus
+          Kafka. Los motores de FastPass y Aforo consumen el evento en paralelo.
         </p>
       </header>
 
       <div className="-mx-2 overflow-x-auto px-2 pb-2">
-        <div className="relative min-w-[1600px] rounded-xl border border-white/40 bg-gradient-to-br from-slate-50/60 via-white/40 to-indigo-50/40 aspect-[16/7] shadow-inner shadow-blue-900/5">
+        <div className="relative min-w-[2000px] rounded-xl border border-white/40 bg-gradient-to-br from-slate-50/60 via-white/40 to-indigo-50/40 aspect-[20/7] shadow-inner shadow-blue-900/5">
           <div className="absolute inset-0 overflow-hidden rounded-xl">
             {LANES.map((lane) => (
               <LaneColumn key={lane.label} lane={lane} />
@@ -437,16 +540,12 @@ export function DataFlowPipeline() {
           </svg>
 
           {NODES.map((node) => (
-            <Node
-              key={node.id}
-              node={node}
-              isGlowing={node.id === "identityBroker"}
-            />
+            <Node key={node.id} node={node} style={nodeStyleFor(node.id)} />
           ))}
         </div>
       </div>
 
-      <footer className="mt-4 flex flex-wrap items-center gap-4 text-[11px] text-slate-500">
+      <footer className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-[11px] text-slate-500">
         <span className="inline-flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-sky-500" /> App
         </span>
@@ -464,6 +563,18 @@ export function DataFlowPipeline() {
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-cyan-500" /> BD Core (guest)
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-orange-500" /> Event Bus Kafka
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" /> Motor FastPass
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-fuchsia-500" /> Motor Aforo
+        </span>
+        <span className="inline-flex items-center gap-1.5">
+          <span className="h-1.5 w-1.5 rounded-full bg-amber-500" /> QR FastPass
         </span>
       </footer>
     </div>

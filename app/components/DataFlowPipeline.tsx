@@ -3,13 +3,9 @@
 import type React from "react";
 import { motion } from "framer-motion";
 import {
-  Bot,
   Building2,
-  Cloud,
-  Cpu,
   Database,
-  MapPinned,
-  QrCode,
+  ShieldCheck,
   Smartphone,
   UsersRound,
   Waypoints,
@@ -17,16 +13,12 @@ import {
 } from "lucide-react";
 
 type NodeId =
-  | "crm"
   | "ingestaApp"
   | "ingestaGate"
   | "gateway"
-  | "brain"
-  | "operationalDb"
-  | "salidaQr"
-  | "salidaHeat"
-  | "nlp"
-  | "dataLake";
+  | "identityBroker"
+  | "crm"
+  | "coreDb";
 
 type NodeDef = {
   id: NodeId;
@@ -49,22 +41,56 @@ type Edge = {
   dashed?: boolean;
 };
 
-const NODES: NodeDef[] = [
+type Lane = {
+  label: string;
+  step: string;
+  xPct: number;
+  widthPct: number;
+  tint: string;
+  border: string;
+  dotColor: string;
+};
+
+const LANES: Lane[] = [
   {
-    id: "crm",
-    title: "CRM Comfenalco",
-    subtitle: "Master de afiliados",
-    icon: UsersRound,
-    accent: "border-teal-200/60",
-    iconBg: "bg-teal-50 text-teal-600 ring-teal-100",
-    payload: {
-      source: "CRM_Master",
-      query: "validate_user",
-    },
-    xPct: 1,
-    yPct: 37,
-    widthPct: 12,
+    step: "Capa 1",
+    label: "Ingesta",
+    xPct: 0,
+    widthPct: 25,
+    tint: "bg-sky-100/25",
+    border: "border-sky-200/40",
+    dotColor: "bg-sky-400",
   },
+  {
+    step: "Capa 2",
+    label: "Enrutamiento",
+    xPct: 25,
+    widthPct: 25,
+    tint: "bg-slate-100/25",
+    border: "border-slate-200/40",
+    dotColor: "bg-slate-400",
+  },
+  {
+    step: "Capa 2",
+    label: "Seguridad · Identity Broker",
+    xPct: 50,
+    widthPct: 25,
+    tint: "bg-violet-100/25",
+    border: "border-violet-200/40",
+    dotColor: "bg-violet-400",
+  },
+  {
+    step: "Capa 2",
+    label: "Validación",
+    xPct: 75,
+    widthPct: 25,
+    tint: "bg-emerald-100/25",
+    border: "border-emerald-200/40",
+    dotColor: "bg-emerald-400",
+  },
+];
+
+const NODES: NodeDef[] = [
   {
     id: "ingestaApp",
     title: "Ingesta · App",
@@ -74,13 +100,12 @@ const NODES: NodeDef[] = [
     iconBg: "bg-sky-50 text-sky-600 ring-sky-100",
     payload: {
       id: "user_123",
-      cat: "B",
-      action: "scan",
+      action: "request_fastpass",
       src: "app",
     },
-    xPct: 15,
-    yPct: 8,
-    widthPct: 12,
+    xPct: 5,
+    yPct: 10,
+    widthPct: 16,
   },
   {
     id: "ingestaGate",
@@ -91,138 +116,85 @@ const NODES: NodeDef[] = [
     iconBg: "bg-emerald-50 text-emerald-600 ring-emerald-100",
     payload: {
       id: "user_456",
-      cat: "A",
-      action: "scan",
+      action: "request_fastpass",
       src: "gate",
     },
-    xPct: 15,
+    xPct: 5,
     yPct: 66,
-    widthPct: 12,
+    widthPct: 16,
   },
   {
     id: "gateway",
     title: "API Gateway",
-    subtitle: "Enrutador de peticiones",
+    subtitle: "Enrutador seguro",
     icon: Waypoints,
     accent: "border-slate-200/60",
     iconBg: "bg-slate-100 text-slate-700 ring-slate-200",
     payload: {
-      route_to: "fastpass_engine | guest_db",
+      route: "identity_broker",
+      tls: "mTLS",
+      rate_limit: "420/min",
     },
-    xPct: 29,
+    xPct: 30,
     yPct: 37,
-    widthPct: 12,
+    widthPct: 16,
   },
   {
-    id: "brain",
-    title: "Motor de Reglas",
-    subtitle: "FastPass · Cat. A / B / C",
-    icon: Cpu,
-    accent: "border-indigo-200/60",
-    iconBg: "bg-indigo-50 text-indigo-600 ring-indigo-100",
-    payload: {
-      engine: "rule-set v3.2",
-      load: "caliente",
-      latency_ms: 42,
-    },
-    xPct: 43,
-    yPct: 8,
-    widthPct: 12,
-  },
-  {
-    id: "operationalDb",
-    title: "BD Operativa",
-    subtitle: "PostgreSQL · guest log",
-    icon: Database,
-    accent: "border-rose-200/60",
-    iconBg: "bg-rose-50 text-rose-600 ring-rose-100",
-    payload: {
-      type: "guest_log",
-      action: "store_analytics",
-    },
-    xPct: 43,
-    yPct: 66,
-    widthPct: 12,
-  },
-  {
-    id: "salidaQr",
-    title: "Salida · FastPass",
-    subtitle: "Token QR firmado",
-    icon: QrCode,
-    accent: "border-amber-200/60",
-    iconBg: "bg-amber-50 text-amber-600 ring-amber-100",
-    payload: {
-      status: "approved",
-      token: "QR_89X",
-      cooldown: "45m",
-    },
-    xPct: 57,
-    yPct: 8,
-    widthPct: 12,
-  },
-  {
-    id: "salidaHeat",
-    title: "Salida · Heatmap",
-    subtitle: "Actualización de zona",
-    icon: MapPinned,
-    accent: "border-fuchsia-200/60",
-    iconBg: "bg-fuchsia-50 text-fuchsia-600 ring-fuchsia-100",
-    payload: {
-      zone: "atracciones",
-      delta: 1,
-      ts: "live",
-    },
-    xPct: 57,
-    yPct: 66,
-    widthPct: 12,
-  },
-  {
-    id: "nlp",
-    title: "Motor NLP",
-    subtitle: "API Chatbot (read-only)",
-    icon: Bot,
+    id: "identityBroker",
+    title: "Identity Broker",
+    subtitle: "Verificación de identidad",
+    icon: ShieldCheck,
     accent: "border-violet-200/60",
     iconBg: "bg-violet-50 text-violet-600 ring-violet-100",
     payload: {
-      model: "LLM_v4",
-      intent: "wait_time",
-      read_only: true,
+      verify: "jwt + carne",
+      branch: "affiliate | guest",
+      ttl_s: 900,
     },
-    xPct: 72,
+    xPct: 55,
     yPct: 37,
-    widthPct: 12,
+    widthPct: 16,
   },
   {
-    id: "dataLake",
-    title: "Data Lake",
-    subtitle: "Cold storage · analytics",
-    icon: Cloud,
+    id: "crm",
+    title: "CRM Comfenalco",
+    subtitle: "Master de afiliados",
+    icon: UsersRound,
+    accent: "border-teal-200/60",
+    iconBg: "bg-teal-50 text-teal-600 ring-teal-100",
+    payload: {
+      source: "CRM_Master",
+      query: "validate_user",
+      category: "A | B | C",
+    },
+    xPct: 80,
+    yPct: 10,
+    widthPct: 18,
+  },
+  {
+    id: "coreDb",
+    title: "BD Core · PostgreSQL",
+    subtitle: "Registro de no afiliados",
+    icon: Database,
     accent: "border-cyan-200/60",
     iconBg: "bg-cyan-50 text-cyan-600 ring-cyan-100",
     payload: {
-      bucket: "piscilago_data",
-      type: "cold_storage",
+      db: "postgres",
+      action: "upsert_guest",
+      pool: "operational",
     },
-    xPct: 86,
-    yPct: 37,
-    widthPct: 13,
+    xPct: 80,
+    yPct: 66,
+    widthPct: 18,
   },
 ];
 
 const EDGES: Edge[] = [
-  { from: "crm", to: "ingestaApp", color: "#14b8a6", delay: 0 },
-  { from: "crm", to: "ingestaGate", color: "#14b8a6", delay: 0.4 },
-  { from: "ingestaApp", to: "gateway", color: "#0ea5e9", delay: 0.8 },
-  { from: "ingestaGate", to: "gateway", color: "#10b981", delay: 1.2 },
-  { from: "gateway", to: "brain", color: "#6366f1", delay: 1.6 },
-  { from: "gateway", to: "operationalDb", color: "#f43f5e", delay: 2.0 },
-  { from: "brain", to: "salidaQr", color: "#f59e0b", delay: 2.4 },
-  { from: "brain", to: "salidaHeat", color: "#a855f7", delay: 2.8 },
-  { from: "operationalDb", to: "salidaHeat", color: "#ec4899", delay: 3.2 },
-  { from: "operationalDb", to: "nlp", color: "#8b5cf6", delay: 3.4, dashed: true },
-  { from: "salidaQr", to: "dataLake", color: "#06b6d4", delay: 3.6 },
-  { from: "salidaHeat", to: "dataLake", color: "#06b6d4", delay: 4.0 },
-  { from: "operationalDb", to: "dataLake", color: "#06b6d4", delay: 4.4 },
+  { from: "ingestaApp", to: "gateway", color: "#0ea5e9", delay: 0 },
+  { from: "ingestaGate", to: "gateway", color: "#10b981", delay: 0.4 },
+  { from: "gateway", to: "identityBroker", color: "#64748b", delay: 0.8 },
+  { from: "identityBroker", to: "crm", color: "#14b8a6", delay: 1.2 },
+  { from: "identityBroker", to: "coreDb", color: "#06b6d4", delay: 1.6 },
 ];
 
 function nodeAnchor(id: NodeId, side: "right" | "left"): { x: number; y: number } {
@@ -264,13 +236,19 @@ function PayloadCode({
   );
 }
 
-function Node({ node, isBrain = false }: { node: NodeDef; isBrain?: boolean }) {
+function Node({
+  node,
+  isGlowing = false,
+}: {
+  node: NodeDef;
+  isGlowing?: boolean;
+}) {
   const Icon = node.icon;
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.5, delay: isBrain ? 0.2 : 0.05 }}
+      transition={{ duration: 0.5, delay: isGlowing ? 0.2 : 0.05 }}
       className="absolute"
       style={{
         left: `${node.xPct}%`,
@@ -279,12 +257,12 @@ function Node({ node, isBrain = false }: { node: NodeDef; isBrain?: boolean }) {
       }}
     >
       <div
-        className={`relative rounded-2xl border bg-white/75 p-4 shadow-lg shadow-blue-900/5 backdrop-blur-md ${node.accent}`}
+        className={`relative rounded-2xl border bg-white/80 p-4 shadow-lg shadow-blue-900/5 backdrop-blur-md ${node.accent}`}
       >
-        {isBrain && (
+        {isGlowing && (
           <motion.div
             aria-hidden
-            className="pointer-events-none absolute -inset-1 rounded-2xl bg-indigo-400/30 blur-xl"
+            className="pointer-events-none absolute -inset-1 rounded-2xl bg-violet-400/30 blur-xl"
             animate={{ opacity: [0.25, 0.7, 0.25], scale: [0.95, 1.05, 0.95] }}
             transition={{ duration: 2.2, repeat: Infinity, ease: "easeInOut" }}
           />
@@ -304,9 +282,9 @@ function Node({ node, isBrain = false }: { node: NodeDef; isBrain?: boolean }) {
                 {node.title}
               </h3>
             </div>
-            {isBrain && (
+            {isGlowing && (
               <motion.span
-                className="ml-auto inline-flex h-2 w-2 rounded-full bg-indigo-500"
+                className="ml-auto inline-flex h-2 w-2 rounded-full bg-violet-500"
                 animate={{ opacity: [0.3, 1, 0.3], scale: [0.9, 1.15, 0.9] }}
                 transition={{ duration: 1.1, repeat: Infinity, ease: "easeInOut" }}
               />
@@ -372,24 +350,49 @@ function EdgePulse({ edge }: { edge: Edge }) {
   );
 }
 
+function LaneColumn({ lane }: { lane: Lane }) {
+  return (
+    <div
+      className={`absolute inset-y-0 border-l ${lane.border} ${lane.tint}`}
+      style={{ left: `${lane.xPct}%`, width: `${lane.widthPct}%` }}
+    >
+      <div className="absolute left-3 top-3 inline-flex items-center gap-2 rounded-full border border-white/50 bg-white/70 px-2.5 py-1 text-[10px] font-medium text-slate-600 shadow-sm shadow-blue-900/5 backdrop-blur">
+        <span className={`h-1.5 w-1.5 rounded-full ${lane.dotColor}`} />
+        <span className="font-mono tracking-widest text-slate-400">
+          {lane.step}
+        </span>
+        <span>·</span>
+        <span className="font-semibold text-slate-800">{lane.label}</span>
+      </div>
+    </div>
+  );
+}
+
 export function DataFlowPipeline() {
   return (
     <div className="rounded-2xl border border-white/30 bg-white/70 p-6 shadow-lg shadow-blue-900/5 backdrop-blur-md">
       <header className="mb-4">
         <p className="text-xs font-medium uppercase tracking-widest text-indigo-600">
-          Pipeline operacional · End-to-End
+          Pipeline operacional · arquitectura empresarial
         </p>
         <h1 className="mt-1 text-xl font-semibold text-slate-900">
-          Red de nodos · CRM → decisión → Data Lake
+          Carriles de ingesta, enrutamiento y seguridad
         </h1>
         <p className="mt-1 text-sm text-slate-500">
-          Cada pulso representa un evento. La línea punteada indica lectura
-          analítica del chatbot (sin escritura).
+          Eventos fluyen de izquierda a derecha a través del API Gateway y el
+          Identity Broker, bifurcándose hacia CRM (afiliados) o BD Core (no
+          afiliados).
         </p>
       </header>
 
       <div className="-mx-2 overflow-x-auto px-2 pb-2">
         <div className="relative min-w-[1600px] rounded-xl border border-white/40 bg-gradient-to-br from-slate-50/60 via-white/40 to-indigo-50/40 aspect-[16/7] shadow-inner shadow-blue-900/5">
+          <div className="absolute inset-0 overflow-hidden rounded-xl">
+            {LANES.map((lane) => (
+              <LaneColumn key={lane.label} lane={lane} />
+            ))}
+          </div>
+
           <svg
             viewBox="0 0 100 100"
             preserveAspectRatio="none"
@@ -409,7 +412,7 @@ export function DataFlowPipeline() {
                   <stop
                     offset="50%"
                     stopColor={e.color}
-                    stopOpacity={e.dashed ? 0.4 : 0.65}
+                    stopOpacity={e.dashed ? 0.4 : 0.7}
                   />
                   <stop offset="100%" stopColor={e.color} stopOpacity={0.15} />
                 </linearGradient>
@@ -434,39 +437,33 @@ export function DataFlowPipeline() {
           </svg>
 
           {NODES.map((node) => (
-            <Node key={node.id} node={node} isBrain={node.id === "brain"} />
+            <Node
+              key={node.id}
+              node={node}
+              isGlowing={node.id === "identityBroker"}
+            />
           ))}
         </div>
       </div>
 
       <footer className="mt-4 flex flex-wrap items-center gap-4 text-[11px] text-slate-500">
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-teal-500" /> CRM
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-sky-500" /> Ingesta App
+          <span className="h-1.5 w-1.5 rounded-full bg-sky-500" /> App
         </span>
         <span className="inline-flex items-center gap-1.5">
           <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" /> Taquilla
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-indigo-500" /> Motor de reglas
+          <span className="h-1.5 w-1.5 rounded-full bg-slate-500" /> API Gateway
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-rose-500" /> BD operativa
+          <span className="h-1.5 w-1.5 rounded-full bg-violet-500" /> Identity Broker
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-amber-500" /> FastPass emitido
+          <span className="h-1.5 w-1.5 rounded-full bg-teal-500" /> CRM afiliados
         </span>
         <span className="inline-flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-fuchsia-500" /> Heatmap
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="h-1 w-4 border-t border-dashed border-violet-500" />
-          Lectura chatbot (NLP)
-        </span>
-        <span className="inline-flex items-center gap-1.5">
-          <span className="h-1.5 w-1.5 rounded-full bg-cyan-500" /> Data Lake
+          <span className="h-1.5 w-1.5 rounded-full bg-cyan-500" /> BD Core (guest)
         </span>
       </footer>
     </div>

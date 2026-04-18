@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowLeft, Waves } from "lucide-react";
 
 import { LiveDashboard } from "../components/LiveDashboard";
+import { TimeRangeSelector } from "../components/TimeRangeSelector";
 
 export default function DashboardPage() {
   return (
@@ -22,13 +23,16 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <Link
-            href="/"
-            className="inline-flex items-center gap-1.5 rounded-lg border border-white/30 bg-white/70 px-3 py-1.5 text-xs font-medium text-slate-700 shadow-lg shadow-blue-900/5 backdrop-blur-md transition hover:bg-white/90"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" aria-hidden />
-            Flujo de datos
-          </Link>
+          <div className="flex items-center gap-3">
+            <TimeRangeSelector />
+            <Link
+              href="/"
+              className="inline-flex items-center gap-1.5 rounded-lg border border-white/30 bg-white/70 px-3 py-1.5 text-xs font-medium text-slate-700 shadow-lg shadow-blue-900/5 backdrop-blur-md transition hover:bg-white/90"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" aria-hidden />
+              Flujo de datos
+            </Link>
+          </div>
         </div>
       </header>
 

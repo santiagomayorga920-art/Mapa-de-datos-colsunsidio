@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { CircleDollarSign, Gauge, Users } from "lucide-react";
+import { CircleDollarSign, Gauge, Ticket, TrendingUp } from "lucide-react";
 
 import { capacityData } from "@/src/lib/mockDb";
 
@@ -41,12 +41,20 @@ const itemVariants = {
 const cardBase =
   "rounded-2xl border border-white/30 bg-white/70 p-5 shadow-lg shadow-blue-900/5 backdrop-blur-md";
 
+const TAQUILLA_INGRESO_HOY = 6_700_000;
+const FASTPASS_EMITIDOS = 412;
+const FASTPASS_TASA_USO = 88;
+const PROYECCION_AFORO = 150;
+
 export function KpiCards({ aforoFisico, aforoApp, ingresosInApp }: KpiCardsProps) {
   const aforoActual = aforoFisico + aforoApp;
   const aforoMax = capacityData.aforoTotal;
-  const restante = Math.max(aforoMax - aforoActual, 0);
   const porcentaje = Math.round((aforoActual / aforoMax) * 100);
   const enAlerta = porcentaje >= 90;
+
+  const ingresosTotal = ingresosInApp + TAQUILLA_INGRESO_HOY;
+  const pctInApp = Math.round((ingresosInApp / ingresosTotal) * 100);
+  const pctTaquilla = 100 - pctInApp;
 
   return (
     <motion.section
@@ -102,6 +110,15 @@ export function KpiCards({ aforoFisico, aforoApp, ingresosInApp }: KpiCardsProps
         <p className="mt-2 text-xs text-slate-500">
           {porcentaje}% del aforo permitido.
         </p>
+        <motion.p
+          initial={{ opacity: 0, y: 4 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.4, delay: 0.45 }}
+          className="mt-1 flex items-center gap-1 text-[11px] font-medium text-indigo-600"
+        >
+          <TrendingUp className="h-3 w-3" aria-hidden />
+          Proyección próxima hora: +{PROYECCION_AFORO} pers.
+        </motion.p>
       </motion.article>
 
       <motion.article
@@ -110,40 +127,40 @@ export function KpiCards({ aforoFisico, aforoApp, ingresosInApp }: KpiCardsProps
         transition={{ type: "spring", stiffness: 260, damping: 22 }}
         className={cardBase}
       >
-        <header className="flex items-center gap-2">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100">
-            <Users className="h-4 w-4" aria-hidden />
+        <header className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 ring-1 ring-emerald-100">
+              <Ticket className="h-4 w-4" aria-hidden />
+            </span>
+            <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
+              FastPass
+            </p>
+          </div>
+          <span className="rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700 ring-1 ring-emerald-100">
+            Activo
           </span>
-          <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
-            Capacidad restante
-          </p>
         </header>
 
         <p className="mt-4 text-2xl font-semibold tabular-nums text-slate-900">
-          {restante.toLocaleString("es-CO")}
+          {FASTPASS_EMITIDOS.toLocaleString("es-CO")}
         </p>
         <p className="mt-1 text-xs text-slate-500">
-          Personas que aún pueden ingresar hoy.
+          Reservas activas emitidas hoy.
         </p>
 
-        <dl className="mt-4 grid grid-cols-2 gap-3 border-t border-white/40 pt-3">
-          <div>
-            <dt className="text-[11px] uppercase tracking-wider text-slate-400">
-              Físicos
-            </dt>
-            <dd className="text-sm font-semibold tabular-nums text-slate-900">
-              {aforoFisico.toLocaleString("es-CO")}
-            </dd>
-          </div>
-          <div>
-            <dt className="text-[11px] uppercase tracking-wider text-slate-400">
-              App
-            </dt>
-            <dd className="text-sm font-semibold tabular-nums text-slate-900">
-              {aforoApp.toLocaleString("es-CO")}
-            </dd>
-          </div>
-        </dl>
+        <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-100">
+          <motion.div
+            className="h-full rounded-full bg-emerald-500"
+            animate={{ width: `${FASTPASS_TASA_USO}%` }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          />
+        </div>
+        <p className="mt-2 text-xs text-slate-500">
+          Tasa de uso:{" "}
+          <span className="font-semibold text-emerald-700">
+            {FASTPASS_TASA_USO}%
+          </span>
+        </p>
       </motion.article>
 
       <motion.article
@@ -152,25 +169,50 @@ export function KpiCards({ aforoFisico, aforoApp, ingresosInApp }: KpiCardsProps
         transition={{ type: "spring", stiffness: 260, damping: 22 }}
         className={cardBase}
       >
-        <header className="flex items-center gap-2">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 ring-1 ring-amber-100">
-            <CircleDollarSign className="h-4 w-4" aria-hidden />
+        <header className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-amber-50 text-amber-600 ring-1 ring-amber-100">
+              <CircleDollarSign className="h-4 w-4" aria-hidden />
+            </span>
+            <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
+              Ingreso Total Hoy
+            </p>
+          </div>
+          <span className="rounded-full bg-amber-50 px-2 py-0.5 text-[11px] font-semibold text-amber-700 ring-1 ring-amber-100">
+            +12,4%
           </span>
-          <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
-            Ingresos In-App (Hoy)
-          </p>
         </header>
 
         <p className="mt-4 text-2xl font-semibold tabular-nums text-slate-900">
-          {formatCOP(ingresosInApp)}
+          {formatCOP(ingresosTotal)}
         </p>
         <p className="mt-1 text-xs text-slate-500">
-          Compras de FastPass y restaurantes vía aplicación.
+          Bifurcado por canal de compra.
         </p>
 
-        <div className="mt-4 flex items-center gap-2 rounded-lg bg-white/60 px-3 py-2 text-[11px] text-slate-600 ring-1 ring-white/40 backdrop-blur">
-          <span className="inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500" />
-          +12,4% vs. ayer
+        <div className="mt-3 flex h-2 w-full overflow-hidden rounded-full bg-slate-100">
+          <motion.div
+            className="h-full bg-amber-500"
+            animate={{ width: `${pctInApp}%` }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          />
+          <motion.div
+            className="h-full bg-slate-400"
+            animate={{ width: `${pctTaquilla}%` }}
+            transition={{ duration: 0.8, ease: "easeOut" }}
+          />
+        </div>
+        <div className="mt-2 flex items-center justify-between text-[11px] text-slate-500">
+          <div className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-amber-500" />
+            In-App{" "}
+            <span className="font-semibold text-slate-700">{pctInApp}%</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <span className="h-2 w-2 rounded-full bg-slate-400" />
+            Taquilla{" "}
+            <span className="font-semibold text-slate-700">{pctTaquilla}%</span>
+          </div>
         </div>
       </motion.article>
     </motion.section>

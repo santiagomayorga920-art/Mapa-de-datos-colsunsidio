@@ -10,6 +10,7 @@ import {
 } from "@/src/lib/mockDb";
 import type { Transaction } from "@/src/lib/types";
 
+import { AffiliateMixChart } from "./AffiliateMixChart";
 import { FastPassTable } from "./FastPassTable";
 import { HeatmapChart, type ZoneTrendPoint } from "./HeatmapChart";
 import { KpiCards } from "./KpiCards";
@@ -142,6 +143,7 @@ export function LiveDashboard() {
         aforoApp={aforoApp}
         ingresosInApp={ingresosInApp}
       />
+      <AffiliateMixChart />
       <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
         <HeatmapChart data={trend} />
         <FastPassTable rows={rows} highlightId={highlightId} />

@@ -18,10 +18,10 @@ type Segment = {
 };
 
 const DATA: Segment[] = [
-  { name: "Cat A", value: 35, color: "#6366f1", description: "Afiliados premium" },
-  { name: "Cat B", value: 28, color: "#10b981", description: "Afiliados estándar" },
-  { name: "Cat C", value: 22, color: "#f59e0b", description: "Afiliados básicos" },
-  { name: "No Afiliados", value: 15, color: "#64748b", description: "Visitantes ocasionales" },
+  { name: "Cat A", value: 35, color: "#818cf8", description: "Afiliados premium" },
+  { name: "Cat B", value: 28, color: "#34d399", description: "Afiliados estándar" },
+  { name: "Cat C", value: 22, color: "#fbbf24", description: "Afiliados básicos" },
+  { name: "No Afiliados", value: 15, color: "#94a3b8", description: "Visitantes ocasionales" },
 ];
 
 const containerVariants = {
@@ -44,29 +44,30 @@ const legendItem = {
 
 export function AffiliateMixChart() {
   const total = DATA.reduce((acc, d) => acc + d.value, 0);
+  const afiliados = DATA[0].value + DATA[1].value + DATA[2].value;
 
   return (
     <motion.article
       variants={containerVariants}
       initial="hidden"
       animate="visible"
-      className="rounded-2xl border border-white/30 bg-white/70 p-5 shadow-lg shadow-blue-900/5 backdrop-blur-md"
+      className="rounded-2xl border border-white/10 bg-white/[0.04] p-5 shadow-2xl shadow-black/40 ring-1 ring-inset ring-white/5 backdrop-blur-xl"
     >
       <header className="flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-violet-50 text-violet-600 ring-1 ring-violet-100">
+          <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/15 text-violet-300 ring-1 ring-violet-400/25">
             <UsersRound className="h-4 w-4" aria-hidden />
           </span>
           <div>
             <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
               Composición de Asistentes
             </p>
-            <p className="text-sm font-semibold text-slate-900">
+            <p className="text-sm font-semibold text-slate-50">
               Mix por categoría de afiliación
             </p>
           </div>
         </div>
-        <span className="rounded-full bg-violet-50 px-2 py-0.5 text-[11px] font-semibold text-violet-700 ring-1 ring-violet-100">
+        <span className="rounded-full bg-violet-500/10 px-2 py-0.5 text-[11px] font-semibold text-violet-300 ring-1 ring-violet-400/25">
           {total}% total
         </span>
       </header>
@@ -84,7 +85,8 @@ export function AffiliateMixChart() {
                 paddingAngle={2}
                 startAngle={90}
                 endAngle={-270}
-                stroke="none"
+                stroke="rgba(15, 23, 42, 0.6)"
+                strokeWidth={1}
                 isAnimationActive
                 animationDuration={900}
               >
@@ -95,11 +97,12 @@ export function AffiliateMixChart() {
               <Tooltip
                 contentStyle={{
                   borderRadius: 12,
-                  border: "1px solid rgba(255,255,255,0.5)",
-                  background: "rgba(255,255,255,0.92)",
+                  border: "1px solid rgba(255,255,255,0.1)",
+                  background: "rgba(15, 23, 42, 0.92)",
                   backdropFilter: "blur(12px)",
                   fontSize: 12,
-                  boxShadow: "0 10px 25px -12px rgba(30, 41, 59, 0.25)",
+                  color: "#e2e8f0",
+                  boxShadow: "0 10px 25px -12px rgba(0, 0, 0, 0.6)",
                 }}
                 formatter={(value, name) => [`${value}%`, name]}
               />
@@ -109,8 +112,8 @@ export function AffiliateMixChart() {
             <p className="text-[10px] font-medium uppercase tracking-widest text-slate-400">
               Afiliados
             </p>
-            <p className="text-2xl font-semibold tabular-nums text-slate-900">
-              {DATA[0].value + DATA[1].value + DATA[2].value}%
+            <p className="text-2xl font-semibold tabular-nums text-slate-50">
+              {afiliados}%
             </p>
           </div>
         </div>
@@ -123,7 +126,7 @@ export function AffiliateMixChart() {
               variants={legendItem}
               initial="hidden"
               animate="visible"
-              className="flex items-center justify-between rounded-lg border border-white/30 bg-white/60 px-3 py-2 text-xs shadow-sm backdrop-blur"
+              className="flex items-center justify-between rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs backdrop-blur"
             >
               <div className="flex items-center gap-2.5">
                 <span
@@ -131,13 +134,13 @@ export function AffiliateMixChart() {
                   style={{ background: entry.color }}
                 />
                 <div>
-                  <p className="font-semibold text-slate-800">{entry.name}</p>
-                  <p className="text-[10px] text-slate-500">
+                  <p className="font-semibold text-slate-100">{entry.name}</p>
+                  <p className="text-[10px] text-slate-400">
                     {entry.description}
                   </p>
                 </div>
               </div>
-              <span className="text-sm font-semibold tabular-nums text-slate-900">
+              <span className="text-sm font-semibold tabular-nums text-slate-50">
                 {entry.value}%
               </span>
             </motion.li>

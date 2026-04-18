@@ -15,7 +15,7 @@ export function TimeRangeSelector() {
       initial={{ opacity: 0, y: -8 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] as const }}
-      className="flex items-center gap-1 rounded-lg border border-white/30 bg-white/70 p-1 pl-2.5 shadow-lg shadow-blue-900/5 backdrop-blur-md"
+      className="flex items-center gap-1 rounded-lg border border-white/10 bg-white/[0.05] p-1 pl-2.5 shadow-xl shadow-black/30 ring-1 ring-inset ring-white/5 backdrop-blur-xl"
     >
       <CalendarClock className="h-3.5 w-3.5 text-slate-400" aria-hidden />
       {OPTIONS.map((opt) => (
@@ -26,13 +26,13 @@ export function TimeRangeSelector() {
           className={`relative rounded-md px-3 py-1 text-[11px] font-medium transition ${
             selected === opt
               ? "text-white"
-              : "text-slate-600 hover:text-slate-900"
+              : "text-slate-400 hover:text-slate-100"
           }`}
         >
           {selected === opt && (
             <motion.span
               layoutId="timeRangePill"
-              className="absolute inset-0 rounded-md bg-indigo-600 shadow-sm"
+              className="absolute inset-0 rounded-md bg-gradient-to-r from-indigo-500 to-indigo-600 shadow-lg shadow-indigo-500/30"
               transition={{ type: "spring", stiffness: 380, damping: 30 }}
             />
           )}

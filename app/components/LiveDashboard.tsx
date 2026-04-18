@@ -11,7 +11,9 @@ import {
 import type { Transaction } from "@/src/lib/types";
 
 import { AffiliateMixChart } from "./AffiliateMixChart";
+import { ChatbotInsights } from "./ChatbotInsights";
 import { FastPassTable } from "./FastPassTable";
+import { IngresosTrendChart } from "./IngresosTrendChart";
 import { KpiCards } from "./KpiCards";
 import { ParkSaturationTreemap } from "./ParkSaturationTreemap";
 import { PeakHourCard } from "./PeakHourCard";
@@ -112,6 +114,14 @@ export function LiveDashboard() {
         </div>
         <div className="xl:col-span-4">
           <PeakHourCard />
+        </div>
+      </div>
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
+        <div className="xl:col-span-8">
+          <IngresosTrendChart />
+        </div>
+        <div className="xl:col-span-4">
+          <ChatbotInsights />
         </div>
       </div>
       <FastPassTable rows={rows} highlightId={highlightId} />

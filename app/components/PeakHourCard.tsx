@@ -26,34 +26,34 @@ export function PeakHourCard() {
         delay: 0.1,
         ease: [0.22, 1, 0.36, 1] as const,
       }}
-      className="flex h-full flex-col rounded-2xl border border-white/30 bg-white/70 p-5 shadow-lg shadow-blue-900/5 backdrop-blur-md"
+      className="flex h-full flex-col rounded-2xl border border-white/10 bg-white/[0.04] p-5 shadow-2xl shadow-black/40 ring-1 ring-inset ring-white/5 backdrop-blur-xl"
     >
       <header className="flex items-center gap-2">
-        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-fuchsia-50 text-fuchsia-600 ring-1 ring-fuchsia-100">
+        <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-fuchsia-500/15 text-fuchsia-300 ring-1 ring-fuchsia-400/25">
           <Sparkles className="h-4 w-4" aria-hidden />
         </span>
         <div>
           <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
             Predicción IA
           </p>
-          <h3 className="text-sm font-semibold text-slate-900">
+          <h3 className="text-sm font-semibold text-slate-50">
             Hora Pico Proyectada Hoy
           </h3>
         </div>
       </header>
 
       <div className="mt-5 flex items-baseline gap-2">
-        <Clock className="h-5 w-5 text-fuchsia-500" aria-hidden />
+        <Clock className="h-5 w-5 text-fuchsia-300" aria-hidden />
         <motion.p
           initial={{ opacity: 0, scale: 0.96 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ delay: 0.35, duration: 0.45 }}
-          className="text-3xl font-semibold tabular-nums text-slate-900"
+          className="text-3xl font-semibold tabular-nums text-slate-50"
         >
           {PEAK_HOUR}
         </motion.p>
       </div>
-      <p className="mt-1 text-xs text-slate-500">
+      <p className="mt-1 text-xs text-slate-400">
         Ventana estimada: 1:30 – 2:15 PM
       </p>
 
@@ -73,14 +73,14 @@ export function PeakHourCard() {
               className={`flex-1 rounded-t ${
                 isPeak
                   ? "bg-gradient-to-t from-fuchsia-500 to-fuchsia-300"
-                  : "bg-gradient-to-t from-fuchsia-200 to-fuchsia-100"
+                  : "bg-gradient-to-t from-fuchsia-500/40 to-fuchsia-400/20"
               }`}
               title={`${slot.hora} · ${slot.intensity}%`}
             />
           );
         })}
       </div>
-      <ul className="mt-1 flex justify-between text-[10px] text-slate-400">
+      <ul className="mt-1 flex justify-between text-[10px] text-slate-500">
         {TIMELINE.map((slot) => (
           <li key={slot.hora} className="tabular-nums">
             {slot.hora}
@@ -88,13 +88,13 @@ export function PeakHourCard() {
         ))}
       </ul>
 
-      <dl className="mt-auto grid grid-cols-2 gap-3 border-t border-white/40 pt-4">
+      <dl className="mt-auto grid grid-cols-2 gap-3 border-t border-white/10 pt-4">
         <div>
           <dt className="flex items-center gap-1 text-[10px] uppercase tracking-wider text-slate-400">
             <TrendingUp className="h-3 w-3" aria-hidden />
             Carga esperada
           </dt>
-          <dd className="mt-0.5 text-sm font-semibold tabular-nums text-slate-900">
+          <dd className="mt-0.5 text-sm font-semibold tabular-nums text-slate-50">
             {EXPECTED_LOAD.toLocaleString("es-CO")} pers.
           </dd>
         </div>
@@ -102,7 +102,7 @@ export function PeakHourCard() {
           <dt className="text-[10px] uppercase tracking-wider text-slate-400">
             Confianza
           </dt>
-          <dd className="mt-0.5 text-sm font-semibold tabular-nums text-fuchsia-700">
+          <dd className="mt-0.5 text-sm font-semibold tabular-nums text-fuchsia-300">
             {CONFIDENCE}%
           </dd>
         </div>

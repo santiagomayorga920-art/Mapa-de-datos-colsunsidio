@@ -12,8 +12,9 @@ import type { Transaction } from "@/src/lib/types";
 
 import { AffiliateMixChart } from "./AffiliateMixChart";
 import { FastPassTable } from "./FastPassTable";
-import { HeatmapChart, type ZoneTrendPoint } from "./HeatmapChart";
 import { KpiCards } from "./KpiCards";
+import { ParkSaturationTreemap } from "./ParkSaturationTreemap";
+import { PeakHourCard } from "./PeakHourCard";
 
 const INITIAL_INGRESOS_COP = 12_500_000;
 const MAX_ROWS = 5;
@@ -24,20 +25,6 @@ function nowLabel(offsetSeconds = 0): string {
     hour: "2-digit",
     minute: "2-digit",
   });
-}
-
-function seedTrend(): ZoneTrendPoint[] {
-  const points: ZoneTrendPoint[] = [];
-  for (let i = 7; i >= 0; i -= 1) {
-    points.push({
-      hora: nowLabel(-i * 60),
-      atracciones: 38 + Math.round(Math.random() * 6),
-      piscinas: 33 + Math.round(Math.random() * 5),
-      restaurantes: 13 + Math.round(Math.random() * 4),
-      descanso: 9 + Math.round(Math.random() * 3),
-    });
-  }
-  return points;
 }
 
 function clamp(value: number, min: number, max: number): number {
@@ -61,7 +48,6 @@ export function LiveDashboard() {
   const [aforoFisico, setAforoFisico] = useState(capacityData.ingresosFisicos);
   const [aforoApp, setAforoApp] = useState(capacityData.ingresosApp);
   const [ingresosInApp, setIngresosInApp] = useState(INITIAL_INGRESOS_COP);
-  const [trend, setTrend] = useState<ZoneTrendPoint[]>(() => seedTrend());
   const [rows, setRows] = useState<Transaction[]>(() =>
     transactions.filter((tx) => tx.tipo === "FastPass").slice(0, MAX_ROWS),
   );
@@ -86,30 +72,6 @@ export function LiveDashboard() {
       setIngresosInApp(
         (prev) => prev + 15_000 + Math.floor(Math.random() * 85_000),
       );
-
-      setTrend((prev) => {
-        const last = prev[prev.length - 1];
-        const next: ZoneTrendPoint = {
-          hora: nowLabel(),
-          atracciones: clamp(
-            last.atracciones + (Math.random() * 4 - 1.5),
-            20,
-            70,
-          ),
-          piscinas: clamp(
-            last.piscinas + (Math.random() * 4 - 1.5),
-            20,
-            60,
-          ),
-          restaurantes: clamp(
-            last.restaurantes + (Math.random() * 3 - 1),
-            5,
-            35,
-          ),
-          descanso: clamp(last.descanso + (Math.random() * 2 - 1), 3, 25),
-        };
-        return [...prev.slice(-7), next];
-      });
 
       if (Math.random() < 0.6) {
         const user = pickRandom(affiliates);
@@ -144,10 +106,15 @@ export function LiveDashboard() {
         ingresosInApp={ingresosInApp}
       />
       <AffiliateMixChart />
-      <div className="grid grid-cols-1 gap-6 xl:grid-cols-2">
-        <HeatmapChart data={trend} />
-        <FastPassTable rows={rows} highlightId={highlightId} />
+      <div className="grid grid-cols-1 gap-6 xl:grid-cols-12">
+        <div className="xl:col-span-8">
+          <ParkSaturationTreemap />
+        </div>
+        <div className="xl:col-span-4">
+          <PeakHourCard />
+        </div>
       </div>
+      <FastPassTable rows={rows} highlightId={highlightId} />
     </div>
   );
 }

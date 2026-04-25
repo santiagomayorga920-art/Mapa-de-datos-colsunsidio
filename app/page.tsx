@@ -26,10 +26,9 @@ type Phase = {
     duracion: string;
     rango: string;
   };
-  presupuesto: {
-    monto: number;
-    frecuencia?: "mensual";
-  };
+  presupuesto: number | string;
+  budgetPercentage: number;
+  justificacionPresupuesto: string;
   entidades: string[];
   contingencias: Contingencia[];
   hitos: string[];
@@ -43,7 +42,10 @@ const PHASES: Phase[] = [
     shortLabel: "Aval Legal",
     title: "Aval Legal",
     cronograma: { duracion: "12 meses", rango: "Meses 1 – 12" },
-    presupuesto: { monto: 120_000_000 },
+    presupuesto: 35_000_000,
+    budgetPercentage: 9,
+    justificacionPresupuesto:
+      "Auditoría externa de protección de datos (Habeas Data) y consultoría legal especializada. El trámite base lo asume el equipo jurídico interno.",
     entidades: ["SSF", "SIC", "Sindicato"],
     contingencias: [
       {
@@ -57,10 +59,7 @@ const PHASES: Phase[] = [
       "Auditoría de Habeas Data",
       "Alineación sindical",
     ],
-    entregables: [
-      "Resolución de aprobación SSF",
-      "Concepto favorable SIC",
-    ],
+    entregables: ["Resolución de aprobación SSF", "Concepto favorable SIC"],
     kpi: "Aprobación legal sin restricciones",
   },
   {
@@ -68,7 +67,10 @@ const PHASES: Phase[] = [
     shortLabel: "Dev & Arquitectura",
     title: "Dev & Arquitectura",
     cronograma: { duracion: "11 meses", rango: "Meses 6 – 16" },
-    presupuesto: { monto: 500_000_000 },
+    presupuesto: 180_000_000,
+    budgetPercentage: 46,
+    justificacionPresupuesto:
+      "Licencias empresariales, infraestructura Cloud (AWS/GCP) y Arquitecto Cloud temporal. El desarrollo se hará con equipo in-house.",
     entidades: ["TI", "Proveedores Cloud"],
     contingencias: [
       {
@@ -81,10 +83,7 @@ const PHASES: Phase[] = [
       "Integración API CRM Comfenalco",
       "Desarrollo Motor NLP y App",
     ],
-    entregables: [
-      "Repositorio v1.0",
-      "Clúster Kafka operativo",
-    ],
+    entregables: ["Repositorio v1.0", "Clúster Kafka operativo"],
     kpi: "Carga de 5,000 req/sec sin caídas",
   },
   {
@@ -92,7 +91,10 @@ const PHASES: Phase[] = [
     shortLabel: "Despliegue Parque",
     title: "Despliegue Parque",
     cronograma: { duracion: "7 meses", rango: "Meses 12 – 18" },
-    presupuesto: { monto: 400_000_000 },
+    presupuesto: 150_000_000,
+    budgetPercentage: 38,
+    justificacionPresupuesto:
+      "Adquisición de 40 PDAs industriales IP67 y cableado de extensores Wi-Fi Mesh para zonas de atracciones sin cobertura 4G.",
     entidades: ["Operaciones", "Infraestructura"],
     contingencias: [
       {
@@ -110,10 +112,7 @@ const PHASES: Phase[] = [
       "Despliegue de escáneres en parque",
       "Pruebas de latencia",
     ],
-    entregables: [
-      "Red Mesh local",
-      "50 PDA IP67 configuradas",
-    ],
+    entregables: ["Red Mesh local", "50 PDA IP67 configuradas"],
     kpi: "Latencia de red < 50ms en atracciones",
   },
   {
@@ -121,7 +120,10 @@ const PHASES: Phase[] = [
     shortLabel: "Marcha Blanca",
     title: "Marcha Blanca",
     cronograma: { duracion: "4 meses", rango: "Meses 18 – 21" },
-    presupuesto: { monto: 60_000_000 },
+    presupuesto: 25_000_000,
+    budgetPercentage: 7,
+    justificacionPresupuesto:
+      "Instalación de 2 Kioscos de auto-servicio físicos y material POP para la capacitación operativa.",
     entidades: ["Staff Piscilago", "Marketing"],
     contingencias: [
       {
@@ -135,10 +137,7 @@ const PHASES: Phase[] = [
       "Instalación de Kioscos SOS",
       "Capacitación a operarios",
     ],
-    entregables: [
-      "Manual de contingencias",
-      "Campaña de expectativa",
-    ],
+    entregables: ["Manual de contingencias", "Campaña de expectativa"],
     kpi: "100% del staff certificado en el uso",
   },
   {
@@ -146,7 +145,10 @@ const PHASES: Phase[] = [
     shortLabel: "Go-Live",
     title: "Go-Live",
     cronograma: { duracion: "Continuo", rango: "Meses 22 – 24+" },
-    presupuesto: { monto: 30_000_000, frecuencia: "mensual" },
+    presupuesto: "$ 12.000.000 / mes",
+    budgetPercentage: 0,
+    justificacionPresupuesto:
+      "OPEX continuo: Consumo real de servidores escalables, bases de datos en la nube y llamadas a la API de inteligencia artificial (NLP).",
     entidades: ["Gerencia", "Soporte"],
     contingencias: [
       {
@@ -160,10 +162,7 @@ const PHASES: Phase[] = [
       "Monitoreo de aforo en vivo",
       "Soporte N1/N2",
     ],
-    entregables: [
-      "Dashboards Gerenciales activos",
-      "Data Lake alimentándose",
-    ],
+    entregables: ["Dashboards Gerenciales activos", "Data Lake alimentándose"],
     kpi: "SLA de disponibilidad del 99.9%",
   },
 ];
@@ -277,26 +276,28 @@ export default function RoadmapHome() {
                   variants={cardItem}
                   className="rounded-2xl border border-white/10 bg-white/[0.05] p-5 shadow-xl shadow-black/30 ring-1 ring-inset ring-white/5 backdrop-blur-xl xl:col-span-4"
                 >
-                  <header className="flex items-center gap-2">
-                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/15 text-amber-300 ring-1 ring-amber-400/25">
-                      <CircleDollarSign className="h-4 w-4" aria-hidden />
-                    </span>
-                    <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
-                      Presupuesto (COP)
-                    </p>
-                  </header>
-                  <p className="mt-4 flex items-baseline gap-1 text-3xl font-semibold tabular-nums text-slate-50">
-                    {formatCOP(phase.presupuesto.monto)}
-                    {phase.presupuesto.frecuencia === "mensual" && (
-                      <span className="text-base font-medium text-amber-300">
-                        / mes
+                  <header className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2">
+                      <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-amber-500/15 text-amber-300 ring-1 ring-amber-400/25">
+                        <CircleDollarSign className="h-4 w-4" aria-hidden />
+                      </span>
+                      <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
+                        Presupuesto (COP)
+                      </p>
+                    </div>
+                    {phase.budgetPercentage > 0 && (
+                      <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-semibold tabular-nums text-amber-200 ring-1 ring-amber-400/25">
+                        {phase.budgetPercentage}% del CAPEX
                       </span>
                     )}
+                  </header>
+                  <p className="mt-4 text-3xl font-semibold tabular-nums leading-tight text-slate-50">
+                    {typeof phase.presupuesto === "number"
+                      ? formatCOP(phase.presupuesto)
+                      : phase.presupuesto}
                   </p>
-                  <p className="mt-1 text-sm font-medium text-amber-300">
-                    {phase.presupuesto.frecuencia === "mensual"
-                      ? "Costo recurrente operativo"
-                      : "Inversión total de la fase"}
+                  <p className="mt-2 text-xs leading-relaxed text-slate-300">
+                    {phase.justificacionPresupuesto}
                   </p>
                 </motion.article>
 

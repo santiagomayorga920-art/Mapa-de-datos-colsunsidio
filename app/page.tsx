@@ -168,11 +168,17 @@ const PHASES: Phase[] = [
 ];
 
 function formatCOP(value: number): string {
-  return new Intl.NumberFormat("es-CO", {
-    style: "currency",
-    currency: "COP",
-    maximumFractionDigits: 0,
-  }).format(value);
+  return `$ ${value.toLocaleString("es-CO")}`;
+}
+
+const TOTAL_MONTHS = 24;
+
+function parseMonthRange(rango: string): { start: number; end: number } {
+  const match = rango.match(/(\d+)\s*[–\-]\s*(\d+)/);
+  if (!match) return { start: 1, end: TOTAL_MONTHS };
+  const start = Math.max(1, parseInt(match[1], 10));
+  const end = Math.min(TOTAL_MONTHS, parseInt(match[2], 10));
+  return { start, end };
 }
 
 const detailVariants = {
@@ -270,6 +276,40 @@ export default function RoadmapHome() {
                   <p className="mt-1 text-sm font-medium text-indigo-300">
                     {phase.cronograma.rango}
                   </p>
+                  <div className="mt-4">
+                    <div className="flex items-end gap-[2px]">
+                      {Array.from({ length: TOTAL_MONTHS }, (_, i) => {
+                        const month = i + 1;
+                        const { start, end } = parseMonthRange(
+                          phase.cronograma.rango,
+                        );
+                        const inRange = month >= start && month <= end;
+                        return (
+                          <motion.span
+                            key={month}
+                            initial={{ scaleY: 0.4, opacity: 0 }}
+                            animate={{ scaleY: 1, opacity: 1 }}
+                            transition={{
+                              delay: 0.2 + i * 0.015,
+                              duration: 0.35,
+                              ease: [0.22, 1, 0.36, 1] as const,
+                            }}
+                            className={`h-3 flex-1 origin-bottom rounded-sm ${
+                              inRange
+                                ? "bg-gradient-to-t from-indigo-500 to-indigo-300 shadow-[0_0_6px_rgba(129,140,248,0.55)]"
+                                : "bg-slate-700/50"
+                            }`}
+                            title={`Mes ${month}`}
+                          />
+                        );
+                      })}
+                    </div>
+                    <div className="mt-1.5 flex justify-between text-[10px] font-mono tabular-nums text-slate-500">
+                      <span>M1</span>
+                      <span>M12</span>
+                      <span>M24</span>
+                    </div>
+                  </div>
                 </motion.article>
 
                 <motion.article
@@ -296,7 +336,20 @@ export default function RoadmapHome() {
                       ? formatCOP(phase.presupuesto)
                       : phase.presupuesto}
                   </p>
-                  <p className="mt-2 text-xs leading-relaxed text-slate-300">
+                  <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-slate-700/50">
+                    <motion.div
+                      key={`bar-${phase.id}`}
+                      initial={{ width: 0 }}
+                      animate={{ width: `${phase.budgetPercentage}%` }}
+                      transition={{
+                        duration: 0.9,
+                        delay: 0.2,
+                        ease: [0.22, 1, 0.36, 1] as const,
+                      }}
+                      className="h-full rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.55)]"
+                    />
+                  </div>
+                  <p className="mt-3 text-sm italic leading-relaxed text-slate-400">
                     {phase.justificacionPresupuesto}
                   </p>
                 </motion.article>
@@ -408,12 +461,10 @@ export default function RoadmapHome() {
                     className="pointer-events-none absolute -bottom-20 -left-12 h-56 w-56 rounded-full bg-indigo-400/20 blur-3xl"
                   />
                   <div className="relative flex flex-col items-center gap-3">
-                    <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/25 text-indigo-100 ring-1 ring-indigo-300/40 shadow-lg shadow-indigo-500/30">
-                      <Target className="h-6 w-6" aria-hidden />
-                    </span>
                     <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-indigo-200">
                       Métrica de Éxito · KPI
                     </p>
+                    <KpiRadial />
                     <p className="text-lg font-semibold leading-snug text-slate-50">
                       {phase.kpi}
                     </p>
@@ -589,5 +640,59 @@ function PhaseTimeline({ phases, activePhase, onSelect }: PhaseTimelineProps) {
         })}
       </ol>
     </nav>
+  );
+}
+
+function KpiRadial() {
+  const radius = 42;
+  const circumference = 2 * Math.PI * radius;
+  return (
+    <div className="relative h-32 w-32">
+      <svg viewBox="0 0 100 100" className="h-full w-full -rotate-90">
+        <defs>
+          <linearGradient id="kpiRingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stopColor="#a5b4fc" />
+            <stop offset="50%" stopColor="#818cf8" />
+            <stop offset="100%" stopColor="#c084fc" />
+          </linearGradient>
+        </defs>
+        <circle
+          cx="50"
+          cy="50"
+          r={radius}
+          fill="none"
+          stroke="rgba(148, 163, 184, 0.18)"
+          strokeWidth={4}
+        />
+        <motion.circle
+          cx="50"
+          cy="50"
+          r={radius}
+          fill="none"
+          stroke="url(#kpiRingGrad)"
+          strokeWidth={4}
+          strokeLinecap="round"
+          strokeDasharray={circumference}
+          initial={{ strokeDashoffset: circumference }}
+          animate={{ strokeDashoffset: 0 }}
+          transition={{
+            duration: 1.2,
+            delay: 0.35,
+            ease: [0.22, 1, 0.36, 1] as const,
+          }}
+          style={{
+            filter: "drop-shadow(0 0 6px rgba(165,180,252,0.55))",
+          }}
+        />
+      </svg>
+      <div className="absolute inset-0 flex flex-col items-center justify-center gap-1">
+        <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/25 text-indigo-100 ring-1 ring-indigo-300/40 shadow-lg shadow-indigo-500/30">
+          <Target className="h-6 w-6" aria-hidden />
+        </span>
+        <span className="text-[10px] font-semibold uppercase tracking-widest text-indigo-200">
+          100%
+        </span>
+      </div>
+    </div>
   );
 }

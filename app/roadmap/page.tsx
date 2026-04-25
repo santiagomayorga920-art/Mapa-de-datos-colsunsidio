@@ -1,10 +1,7 @@
 import Link from "next/link";
 import { ArrowLeft, Map, Waves } from "lucide-react";
 
-import { LiveDashboard } from "../components/LiveDashboard";
-import { TimeRangeSelector } from "../components/TimeRangeSelector";
-
-export default function DashboardPage() {
+export default function RoadmapPage() {
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden text-slate-100">
       <div
@@ -30,34 +27,38 @@ export default function DashboardPage() {
               <p className="text-[11px] font-medium uppercase tracking-widest text-slate-400">
                 Comfenalco · Piscilago
               </p>
-              <h1 className="text-base font-semibold text-slate-50">
-                Panel Gerencial
+              <h1 className="flex items-center gap-2 text-base font-semibold text-slate-50">
+                <Map className="h-4 w-4 text-indigo-300" aria-hidden />
+                Roadmap de Implementación
               </h1>
             </div>
           </div>
 
           <div className="flex items-center gap-3">
-            <TimeRangeSelector />
             <Link
-              href="/roadmap"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-400/30 bg-indigo-500/15 px-3 py-1.5 text-xs font-medium text-indigo-100 shadow-xl shadow-indigo-500/20 ring-1 ring-inset ring-indigo-300/20 backdrop-blur-xl transition hover:bg-indigo-500/25"
-            >
-              <Map className="h-3.5 w-3.5" aria-hidden />
-              Roadmap de Implementación
-            </Link>
-            <Link
-              href="/"
+              href="/dashboard"
               className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.05] px-3 py-1.5 text-xs font-medium text-slate-200 shadow-xl shadow-black/30 ring-1 ring-inset ring-white/5 backdrop-blur-xl transition hover:bg-white/[0.08]"
             >
               <ArrowLeft className="h-3.5 w-3.5" aria-hidden />
-              Flujo de datos
+              Panel gerencial
             </Link>
           </div>
         </div>
       </header>
 
       <main className="mx-auto w-full max-w-[1600px] flex-1 px-6 py-6">
-        <LiveDashboard />
+        <section className="rounded-2xl border border-white/10 bg-white/[0.04] p-8 shadow-2xl shadow-black/40 ring-1 ring-inset ring-white/5 backdrop-blur-xl">
+          <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
+            Roadmap estratégico
+          </p>
+          <h2 className="mt-1 text-2xl font-semibold text-slate-50">
+            Plan de Implementación · Legal · Físico · Técnico
+          </h2>
+          <p className="mt-2 max-w-2xl text-sm text-slate-400">
+            Estructura base lista. El contenido detallado del roadmap se
+            agregará en las siguientes fases.
+          </p>
+        </section>
       </main>
     </div>
   );

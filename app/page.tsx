@@ -7,11 +7,14 @@ import {
   AlertTriangle,
   Building2,
   CalendarRange,
+  CheckCircle2,
   CircleDollarSign,
   Database,
+  FileText,
   Gauge,
   Map,
   ShieldCheck,
+  Target,
   Waves,
 } from "lucide-react";
 
@@ -345,7 +348,109 @@ export default function RoadmapHome() {
                     ))}
                   </ul>
                 </motion.article>
+              </motion.div>
 
+              <motion.div
+                variants={cardStagger}
+                initial="hidden"
+                animate="visible"
+                className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12"
+              >
+                <motion.article
+                  variants={cardItem}
+                  className="rounded-2xl border border-white/10 bg-white/[0.05] p-5 shadow-xl shadow-black/30 ring-1 ring-inset ring-white/5 backdrop-blur-xl xl:col-span-4"
+                >
+                  <header className="flex items-center gap-2">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-400/25">
+                      <CheckCircle2 className="h-4 w-4" aria-hidden />
+                    </span>
+                    <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
+                      Hitos Clave
+                    </p>
+                  </header>
+                  <ul className="mt-4 flex flex-col gap-2">
+                    {phase.hitos.map((hito, idx) => (
+                      <li
+                        key={hito}
+                        className="flex items-start gap-2.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-slate-200"
+                      >
+                        <CheckCircle2
+                          className="mt-0.5 h-4 w-4 flex-shrink-0 text-emerald-300"
+                          aria-hidden
+                        />
+                        <span className="flex-1">{hito}</span>
+                        <span className="ml-auto rounded-full bg-emerald-500/10 px-1.5 text-[10px] font-semibold tabular-nums text-emerald-300 ring-1 ring-emerald-400/20">
+                          {String(idx + 1).padStart(2, "0")}
+                        </span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.article>
+
+                <motion.article
+                  variants={cardItem}
+                  className="rounded-2xl border border-white/10 bg-white/[0.05] p-5 shadow-xl shadow-black/30 ring-1 ring-inset ring-white/5 backdrop-blur-xl xl:col-span-4"
+                >
+                  <header className="flex items-center gap-2">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-violet-500/15 text-violet-300 ring-1 ring-violet-400/25">
+                      <FileText className="h-4 w-4" aria-hidden />
+                    </span>
+                    <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
+                      Entregables Finales
+                    </p>
+                  </header>
+                  <ul className="mt-4 flex flex-col gap-2">
+                    {phase.entregables.map((entregable) => (
+                      <li
+                        key={entregable}
+                        className="flex items-start gap-2.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-slate-200"
+                      >
+                        <FileText
+                          className="mt-0.5 h-4 w-4 flex-shrink-0 text-violet-300"
+                          aria-hidden
+                        />
+                        <span>{entregable}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </motion.article>
+
+                <motion.article
+                  variants={cardItem}
+                  className="relative flex flex-col items-center justify-center overflow-hidden rounded-2xl border border-indigo-300/30 bg-gradient-to-br from-indigo-500/15 via-fuchsia-500/10 to-indigo-500/15 p-6 text-center shadow-2xl shadow-indigo-500/20 ring-1 ring-inset ring-indigo-300/20 backdrop-blur-xl xl:col-span-4"
+                >
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute -top-16 -right-16 h-56 w-56 rounded-full bg-fuchsia-400/15 blur-3xl"
+                  />
+                  <div
+                    aria-hidden
+                    className="pointer-events-none absolute -bottom-20 -left-12 h-56 w-56 rounded-full bg-indigo-400/20 blur-3xl"
+                  />
+                  <div className="relative flex flex-col items-center gap-3">
+                    <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-500/25 text-indigo-100 ring-1 ring-indigo-300/40 shadow-lg shadow-indigo-500/30">
+                      <Target className="h-6 w-6" aria-hidden />
+                    </span>
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.3em] text-indigo-200">
+                      Métrica de Éxito · KPI
+                    </p>
+                    <p className="text-lg font-semibold leading-snug text-slate-50">
+                      {phase.kpi}
+                    </p>
+                    <span className="inline-flex items-center gap-1.5 rounded-full border border-indigo-300/30 bg-indigo-500/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-indigo-100">
+                      <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-300 shadow-[0_0_8px_rgba(110,231,183,0.9)]" />
+                      Indicador objetivo
+                    </span>
+                  </div>
+                </motion.article>
+              </motion.div>
+
+              <motion.div
+                variants={cardStagger}
+                initial="hidden"
+                animate="visible"
+                className="mt-4 grid grid-cols-1 gap-4 xl:grid-cols-12"
+              >
                 <motion.article
                   variants={cardItem}
                   className="relative overflow-hidden rounded-2xl border border-amber-400/40 bg-gradient-to-br from-amber-500/10 via-rose-500/5 to-rose-500/10 p-5 shadow-2xl shadow-amber-500/10 ring-1 ring-inset ring-amber-300/20 backdrop-blur-xl xl:col-span-12"

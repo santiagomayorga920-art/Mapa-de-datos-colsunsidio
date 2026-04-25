@@ -23,15 +23,13 @@ type Phase = {
   id: number;
   shortLabel: string;
   title: string;
-  subtitle: string;
   cronograma: {
     duracion: string;
     rango: string;
-    detalle: string;
   };
   presupuesto: {
     monto: number;
-    desglose: string;
+    frecuencia?: "mensual";
   };
   entidades: string[];
   contingencias: Contingencia[];
@@ -40,176 +38,80 @@ type Phase = {
 const PHASES: Phase[] = [
   {
     id: 1,
-    shortLabel: "Marco Legal",
-    title: "Marco Legal & Cumplimiento",
-    subtitle:
-      "Habeas Data, biometría, convenios con bancos y aprobaciones regulatorias.",
-    cronograma: {
-      duracion: "3 meses",
-      rango: "M1 – M3",
-      detalle: "Trámites con SIC, MinTIC y firma de contratos marco.",
-    },
-    presupuesto: {
-      monto: 145_000_000,
-      desglose: "Honorarios legales, auditoría externa y tasas administrativas.",
-    },
-    entidades: [
-      "Superintendencia de Industria y Comercio (SIC)",
-      "MinTIC",
-      "Comfenalco · Dirección Jurídica",
-      "Proveedor de Identidad (IDP)",
-    ],
+    shortLabel: "Aval Legal",
+    title: "Aval Legal",
+    cronograma: { duracion: "12 meses", rango: "Meses 1 – 12" },
+    presupuesto: { monto: 120_000_000 },
+    entidades: ["SSF", "SIC", "Sindicato"],
     contingencias: [
       {
-        riesgo: "Bloqueo SIC por uso de biometría facial sin consentimiento.",
+        riesgo: "Riesgo de bloqueo por percepción de inequidad.",
         mitigacion:
-          "Consentimiento explícito por capas, opt-out físico en taquilla y DPIA documentado.",
-      },
-      {
-        riesgo: "Demoras en convenios con bancos (PSE / pasarela).",
-        mitigacion:
-          "Pasarela secundaria (Wompi) como fallback contractualizado antes del M2.",
+          "Piloto de bienestar y auditoría de protección de datos (Ley 1581).",
       },
     ],
   },
   {
     id: 2,
-    shortLabel: "Infraestructura",
-    title: "Infraestructura Física & Conectividad",
-    subtitle:
-      "Sensores IoT, lectores QR, red mallada y energía PoE+ en todo el parque.",
-    cronograma: {
-      duracion: "4 meses",
-      rango: "M2 – M5",
-      detalle: "Instalación por zonas con cuadrillas duplicadas en ventana seca.",
-    },
-    presupuesto: {
-      monto: 820_000_000,
-      desglose:
-        "Hardware IoT, switches Meraki, obra civil y certificación eléctrica.",
-    },
-    entidades: [
-      "Comfenalco · Operaciones",
-      "Proveedor LoRaWAN regional",
-      "Cisco Meraki (red)",
-      "Constructora autorizada",
-    ],
+    shortLabel: "Dev & Arquitectura",
+    title: "Dev & Arquitectura",
+    cronograma: { duracion: "11 meses", rango: "Meses 6 – 16" },
+    presupuesto: { monto: 500_000_000 },
+    entidades: ["TI", "Proveedores Cloud"],
     contingencias: [
       {
-        riesgo: "Lluvias retrasan cableado exterior 4 a 6 semanas.",
+        riesgo: "Colapso del CRM legacy.",
         mitigacion:
-          "Plan híbrido: trabajos internos primero + cuadrillas dobles en ventana seca verificada.",
-      },
-      {
-        riesgo: "Daño a tubería hidráulica al instalar sensores subterráneos.",
-        mitigacion:
-          "Levantamiento BIM previo y supervisor hídrico permanente en sitio.",
+          "Migración a caché distribuida paralela (Redis / Kafka).",
       },
     ],
   },
   {
     id: 3,
-    shortLabel: "Plataforma",
-    title: "Plataforma de Datos & Servicios",
-    subtitle:
-      "API Gateway, CRM unificado, Kafka, base operacional y data lake en S3.",
-    cronograma: {
-      duracion: "5 meses",
-      rango: "M3 – M7",
-      detalle: "Migración por dominios, doble corrida del CRM legacy 90 días.",
-    },
-    presupuesto: {
-      monto: 540_000_000,
-      desglose: "Licencias CRM, créditos AWS, vendors y equipo data engineering.",
-    },
-    entidades: [
-      "Comfenalco · Tecnología",
-      "AWS Solutions Architect",
-      "Vendor CRM",
-      "Equipo Data Engineering interno",
-    ],
+    shortLabel: "Despliegue Parque",
+    title: "Despliegue Parque",
+    cronograma: { duracion: "7 meses", rango: "Meses 12 – 18" },
+    presupuesto: { monto: 400_000_000 },
+    entidades: ["Operaciones", "Infraestructura"],
     contingencias: [
       {
-        riesgo:
-          "Migración del CRM legacy (cliente disperso) supera 8 semanas planificadas.",
-        mitigacion:
-          "Doble corrida controlada de 90 días con mapping incremental por dominio.",
+        riesgo: "Hardware dañado por humedad o sol.",
+        mitigacion: "PDA industriales IP67 con encapsulado certificado.",
       },
       {
-        riesgo: "Costos AWS sobrepasan presupuesto en horas pico.",
+        riesgo: "Cero señal 4G en zonas internas del parque.",
         mitigacion:
-          "Reservas + Savings Plans + alertas presupuestales a 70 %, 85 % y 95 %.",
+          "Despliegue de fibra óptica local con redundancia perimetral.",
       },
     ],
   },
   {
     id: 4,
-    shortLabel: "IA & Optimización",
-    title: "Inteligencia Artificial & Optimización",
-    subtitle:
-      "Motor de aforo, NLP, modelos predictivos y recomendaciones personalizadas.",
-    cronograma: {
-      duracion: "4 meses",
-      rango: "M5 – M8",
-      detalle: "Modelos base preentrenados, curaduría manual el primer trimestre.",
-    },
-    presupuesto: {
-      monto: 380_000_000,
-      desglose:
-        "Cómputo GPU, consultoría analítica y plataforma MLOps gobernada.",
-    },
-    entidades: [
-      "Equipo ML interno",
-      "Consultora analítica externa",
-      "Comfenalco · Marketing",
-      "Comité de Gobernanza IA",
-    ],
+    shortLabel: "Marcha Blanca",
+    title: "Marcha Blanca",
+    cronograma: { duracion: "4 meses", rango: "Meses 18 – 21" },
+    presupuesto: { monto: 60_000_000 },
+    entidades: ["Staff Piscilago", "Marketing"],
     contingencias: [
       {
-        riesgo:
-          "Datos insuficientes para entrenar modelos robustos en el primer ciclo.",
+        riesgo: "Fricción social en filas durante la adopción.",
         mitigacion:
-          "Modelos base preentrenados + curaduría manual y data augmentation.",
-      },
-      {
-        riesgo: "Hallucinations del NLP al interactuar con usuarios reales.",
-        mitigacion:
-          "Guardrails, fallback a operador humano si la confianza cae bajo 75 %.",
+          "Kioscos de auto-servicio y capacitación en resolución de conflictos.",
       },
     ],
   },
   {
     id: 5,
-    shortLabel: "Go-live",
-    title: "Operación & Escalamiento",
-    subtitle:
-      "Go-live, soporte 24/7, KPIs gerenciales y retroalimentación continua.",
-    cronograma: {
-      duracion: "Continuo",
-      rango: "M8 – M12+",
-      detalle: "Drills mensuales, ciclos quincenales de mejoras y reportes.",
-    },
-    presupuesto: {
-      monto: 210_000_000,
-      desglose: "Mesa de servicio, soporte multinivel y auditoría externa anual.",
-    },
-    entidades: [
-      "Comfenalco · Operaciones",
-      "Mesa de servicio 24/7",
-      "Comité Directivo",
-      "Auditoría externa",
-    ],
+    shortLabel: "Go-Live",
+    title: "Go-Live",
+    cronograma: { duracion: "Continuo", rango: "Meses 22 – 24+" },
+    presupuesto: { monto: 30_000_000, frecuencia: "mensual" },
+    entidades: ["Gerencia", "Soporte"],
     contingencias: [
       {
-        riesgo:
-          "Adopción baja por parte de afiliados Cat C y visitantes No Afiliados.",
+        riesgo: "Demandas judiciales (tutelas) por acceso desigual.",
         mitigacion:
-          "Campaña educativa, kioskos asistidos e incentivos durante el primer mes.",
-      },
-      {
-        riesgo: "Caída crítica de la plataforma en temporada alta.",
-        mitigacion:
-          "Failover multi-AZ, drills mensuales y plan de comunicación al usuario.",
+          "Motor de reglas programado con 30 % del aforo reservado a fila física.",
       },
     ],
   },
@@ -322,13 +224,13 @@ export default function RoadmapPage() {
               <div className="flex flex-wrap items-end justify-between gap-4">
                 <div>
                   <p className="text-xs font-medium uppercase tracking-[0.25em] text-indigo-300">
-                    Fase {phase.id} de {totalPhases} · {phase.shortLabel}
+                    Fase {phase.id} de {totalPhases}
                   </p>
                   <h2 className="mt-3 text-4xl font-semibold leading-tight tracking-tight text-slate-50 md:text-5xl">
                     {phase.title}
                   </h2>
-                  <p className="mt-3 max-w-3xl text-sm text-slate-400 md:text-base">
-                    {phase.subtitle}
+                  <p className="mt-3 text-sm font-medium text-slate-300">
+                    {phase.cronograma.rango}
                   </p>
                 </div>
                 <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-[11px] font-medium uppercase tracking-widest text-slate-300 ring-1 ring-inset ring-white/5">
@@ -361,9 +263,6 @@ export default function RoadmapPage() {
                   <p className="mt-1 text-sm font-medium text-indigo-300">
                     {phase.cronograma.rango}
                   </p>
-                  <p className="mt-3 text-xs text-slate-400">
-                    {phase.cronograma.detalle}
-                  </p>
                 </motion.article>
 
                 <motion.article
@@ -378,11 +277,18 @@ export default function RoadmapPage() {
                       Presupuesto (COP)
                     </p>
                   </header>
-                  <p className="mt-4 text-3xl font-semibold tabular-nums text-slate-50">
+                  <p className="mt-4 flex items-baseline gap-1 text-3xl font-semibold tabular-nums text-slate-50">
                     {formatCOP(phase.presupuesto.monto)}
+                    {phase.presupuesto.frecuencia === "mensual" && (
+                      <span className="text-base font-medium text-amber-300">
+                        / mes
+                      </span>
+                    )}
                   </p>
-                  <p className="mt-3 text-xs text-slate-400">
-                    {phase.presupuesto.desglose}
+                  <p className="mt-1 text-sm font-medium text-amber-300">
+                    {phase.presupuesto.frecuencia === "mensual"
+                      ? "Costo recurrente operativo"
+                      : "Inversión total de la fase"}
                   </p>
                 </motion.article>
 
@@ -404,7 +310,10 @@ export default function RoadmapPage() {
                         key={entidad}
                         className="flex items-start gap-2 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-slate-200"
                       >
-                        <ShieldCheck className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-sky-300" aria-hidden />
+                        <ShieldCheck
+                          className="mt-0.5 h-3.5 w-3.5 flex-shrink-0 text-sky-300"
+                          aria-hidden
+                        />
                         <span>{entidad}</span>
                       </li>
                     ))}
@@ -434,7 +343,8 @@ export default function RoadmapPage() {
                       </div>
                     </div>
                     <span className="rounded-full border border-amber-300/30 bg-amber-500/15 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-amber-200">
-                      {phase.contingencias.length} riesgos
+                      {phase.contingencias.length} riesgo
+                      {phase.contingencias.length === 1 ? "" : "s"}
                     </span>
                   </header>
 
@@ -527,7 +437,11 @@ function PhaseTimeline({ phases, activePhase, onSelect }: PhaseTimelineProps) {
                         aria-hidden
                         layoutId="activePhaseHalo"
                         className="absolute -inset-1 rounded-full bg-indigo-400/30 blur-md"
-                        transition={{ type: "spring", stiffness: 280, damping: 28 }}
+                        transition={{
+                          type: "spring",
+                          stiffness: 280,
+                          damping: 28,
+                        }}
                       />
                     )}
                   </span>
@@ -552,7 +466,11 @@ function PhaseTimeline({ phases, activePhase, onSelect }: PhaseTimelineProps) {
                   <motion.span
                     layoutId="activePhaseUnderline"
                     className="block h-0.5 w-full rounded-full bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-indigo-400 shadow-[0_0_10px_rgba(165,180,252,0.6)]"
-                    transition={{ type: "spring", stiffness: 320, damping: 28 }}
+                    transition={{
+                      type: "spring",
+                      stiffness: 320,
+                      damping: 28,
+                    }}
                   />
                 )}
               </button>

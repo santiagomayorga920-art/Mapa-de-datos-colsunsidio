@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertTriangle,
@@ -9,13 +8,9 @@ import {
   CalendarRange,
   CheckCircle2,
   CircleDollarSign,
-  Database,
   FileText,
-  Gauge,
-  Map,
   ShieldCheck,
   Target,
-  Waves,
 } from "lucide-react";
 
 type Contingencia = {
@@ -217,23 +212,7 @@ export default function RoadmapHome() {
   const totalPhases = PHASES.length;
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden text-slate-100">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 bg-gradient-to-br from-slate-950 via-indigo-950 to-slate-950"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 -z-10 overflow-hidden"
-      >
-        <div className="absolute -top-40 -left-24 h-[28rem] w-[28rem] rounded-full bg-indigo-600/20 blur-[120px]" />
-        <div className="absolute top-1/3 -right-32 h-[32rem] w-[32rem] rounded-full bg-fuchsia-600/15 blur-[130px]" />
-        <div className="absolute bottom-0 left-1/3 h-96 w-96 rounded-full bg-sky-500/15 blur-[110px]" />
-      </div>
-
-      <GlobalNavBar active="roadmap" />
-
-      <main className="mx-auto w-full max-w-[1600px] flex-1 px-6 py-8">
+    <main className="mx-auto w-full max-w-[1600px] flex-1 px-6 py-8">
         <PhaseTimeline
           phases={PHASES}
           activePhase={activePhase}
@@ -512,91 +491,6 @@ export default function RoadmapHome() {
           </AnimatePresence>
         </div>
       </main>
-    </div>
-  );
-}
-
-type GlobalNavKey = "roadmap" | "pipeline" | "dashboard";
-
-function GlobalNavBar({ active }: { active: GlobalNavKey }) {
-  const items: {
-    key: GlobalNavKey;
-    label: string;
-    href: string;
-    icon: typeof Map;
-  }[] = [
-    { key: "roadmap", label: "Roadmap (Inicio)", href: "/", icon: Map },
-    {
-      key: "pipeline",
-      label: "Arquitectura de Datos",
-      href: "/pipeline",
-      icon: Database,
-    },
-    {
-      key: "dashboard",
-      label: "Panel Gerencial",
-      href: "/dashboard",
-      icon: Gauge,
-    },
-  ];
-
-  return (
-    <header className="relative border-b border-white/10 bg-white/[0.03] shadow-lg shadow-black/20 backdrop-blur-xl">
-      <div className="mx-auto flex w-full max-w-[1600px] flex-wrap items-center justify-between gap-4 px-6 py-4">
-        <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white shadow-lg shadow-indigo-500/30 ring-1 ring-white/20">
-            <Waves className="h-5 w-5" aria-hidden />
-          </div>
-          <div>
-            <p className="text-[11px] font-medium uppercase tracking-[0.3em] text-slate-400">
-              Comfenalco · Piscilago
-            </p>
-            <h1 className="text-lg font-semibold tracking-tight text-slate-50">
-              Proyecto Fast Pass
-            </h1>
-          </div>
-        </div>
-
-        <nav
-          aria-label="Navegación principal"
-          className="flex items-center gap-1 rounded-2xl border border-white/10 bg-white/[0.05] p-1 shadow-xl shadow-black/30 ring-1 ring-inset ring-white/5 backdrop-blur-xl"
-        >
-          {items.map((item, idx) => {
-            const Icon = item.icon;
-            const isActive = item.key === active;
-            const numbered = `${idx + 1}.`;
-            const labelWithNumber = `${numbered} ${item.label}`;
-
-            if (isActive) {
-              return (
-                <button
-                  key={item.key}
-                  type="button"
-                  disabled
-                  aria-current="page"
-                  className="relative inline-flex cursor-default items-center gap-2 rounded-xl bg-gradient-to-br from-indigo-500 via-indigo-500 to-fuchsia-500 px-3.5 py-2 text-xs font-semibold text-white shadow-lg shadow-indigo-500/40 ring-1 ring-inset ring-white/30"
-                >
-                  <Icon className="h-3.5 w-3.5" aria-hidden />
-                  <span>{labelWithNumber}</span>
-                  <span className="ml-1 h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-300 shadow-[0_0_8px_rgba(110,231,183,0.9)]" />
-                </button>
-              );
-            }
-
-            return (
-              <Link
-                key={item.key}
-                href={item.href}
-                className="inline-flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-medium text-slate-300 transition hover:bg-white/[0.06] hover:text-slate-50"
-              >
-                <Icon className="h-3.5 w-3.5" aria-hidden />
-                <span>{labelWithNumber}</span>
-              </Link>
-            );
-          })}
-        </nav>
-      </div>
-    </header>
   );
 }
 

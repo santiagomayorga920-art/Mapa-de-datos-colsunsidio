@@ -39,18 +39,18 @@ export default function DashboardPage() {
           <div className="flex items-center gap-3">
             <TimeRangeSelector />
             <Link
-              href="/roadmap"
+              href="/"
               className="inline-flex items-center gap-1.5 rounded-lg border border-indigo-400/30 bg-indigo-500/15 px-3 py-1.5 text-xs font-medium text-indigo-100 shadow-xl shadow-indigo-500/20 ring-1 ring-inset ring-indigo-300/20 backdrop-blur-xl transition hover:bg-indigo-500/25"
             >
               <Map className="h-3.5 w-3.5" aria-hidden />
-              Roadmap de Implementación
+              Roadmap (Inicio)
             </Link>
             <Link
-              href="/"
+              href="/pipeline"
               className="inline-flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.05] px-3 py-1.5 text-xs font-medium text-slate-200 shadow-xl shadow-black/30 ring-1 ring-inset ring-white/5 backdrop-blur-xl transition hover:bg-white/[0.08]"
             >
               <ArrowLeft className="h-3.5 w-3.5" aria-hidden />
-              Flujo de datos
+              Arquitectura de Datos
             </Link>
           </div>
         </div>

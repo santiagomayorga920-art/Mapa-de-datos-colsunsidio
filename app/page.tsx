@@ -34,6 +34,9 @@ type Phase = {
   };
   entidades: string[];
   contingencias: Contingencia[];
+  hitos: string[];
+  entregables: string[];
+  kpi: string;
 };
 
 const PHASES: Phase[] = [
@@ -51,6 +54,16 @@ const PHASES: Phase[] = [
           "Piloto de bienestar y auditoría de protección de datos (Ley 1581).",
       },
     ],
+    hitos: [
+      "Radicación ante SSF",
+      "Auditoría de Habeas Data",
+      "Alineación sindical",
+    ],
+    entregables: [
+      "Resolución de aprobación SSF",
+      "Concepto favorable SIC",
+    ],
+    kpi: "Aprobación legal sin restricciones",
   },
   {
     id: 2,
@@ -65,6 +78,16 @@ const PHASES: Phase[] = [
         mitigacion: "Migración a caché distribuida paralela (Redis / Kafka).",
       },
     ],
+    hitos: [
+      "Setup infraestructura Cloud",
+      "Integración API CRM Comfenalco",
+      "Desarrollo Motor NLP y App",
+    ],
+    entregables: [
+      "Repositorio v1.0",
+      "Clúster Kafka operativo",
+    ],
+    kpi: "Carga de 5,000 req/sec sin caídas",
   },
   {
     id: 3,
@@ -84,6 +107,16 @@ const PHASES: Phase[] = [
           "Despliegue de fibra óptica local con redundancia perimetral.",
       },
     ],
+    hitos: [
+      "Instalación de fibra óptica",
+      "Despliegue de escáneres en parque",
+      "Pruebas de latencia",
+    ],
+    entregables: [
+      "Red Mesh local",
+      "50 PDA IP67 configuradas",
+    ],
+    kpi: "Latencia de red < 50ms en atracciones",
   },
   {
     id: 4,
@@ -99,6 +132,16 @@ const PHASES: Phase[] = [
           "Kioscos de auto-servicio y capacitación en resolución de conflictos.",
       },
     ],
+    hitos: [
+      "Pruebas Alpha con empleados",
+      "Instalación de Kioscos SOS",
+      "Capacitación a operarios",
+    ],
+    entregables: [
+      "Manual de contingencias",
+      "Campaña de expectativa",
+    ],
+    kpi: "100% del staff certificado en el uso",
   },
   {
     id: 5,
@@ -114,6 +157,16 @@ const PHASES: Phase[] = [
           "Motor de reglas programado con 30 % del aforo reservado a fila física.",
       },
     ],
+    hitos: [
+      "Lanzamiento al público",
+      "Monitoreo de aforo en vivo",
+      "Soporte N1/N2",
+    ],
+    entregables: [
+      "Dashboards Gerenciales activos",
+      "Data Lake alimentándose",
+    ],
+    kpi: "SLA de disponibilidad del 99.9%",
   },
 ];
 

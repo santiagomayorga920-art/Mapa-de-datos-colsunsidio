@@ -23,8 +23,10 @@ type Phase = {
   shortLabel: string;
   title: string;
   cronograma: {
-    duracion: string;
-    rango: string;
+    mesInicio: number;
+    mesFin: number;
+    duracion: number;
+    textoOverlap: string;
   };
   presupuesto: number | string;
   budgetPercentage: number;
@@ -41,7 +43,12 @@ const PHASES: Phase[] = [
     id: 1,
     shortLabel: "Aval Legal",
     title: "Aval Legal",
-    cronograma: { duracion: "12 meses", rango: "Meses 1 – 12" },
+    cronograma: {
+      mesInicio: 1,
+      mesFin: 12,
+      duracion: 12,
+      textoOverlap: "Ejecución lineal inicial.",
+    },
     presupuesto: 35_000_000,
     budgetPercentage: 9,
     justificacionPresupuesto:
@@ -66,7 +73,12 @@ const PHASES: Phase[] = [
     id: 2,
     shortLabel: "Dev & Arquitectura",
     title: "Dev & Arquitectura",
-    cronograma: { duracion: "11 meses", rango: "Meses 6 – 16" },
+    cronograma: {
+      mesInicio: 6,
+      mesFin: 16,
+      duracion: 11,
+      textoOverlap: "Inicia en el mes 6. Trabajo en paralelo con F1 y F3.",
+    },
     presupuesto: 180_000_000,
     budgetPercentage: 46,
     justificacionPresupuesto:
@@ -90,7 +102,12 @@ const PHASES: Phase[] = [
     id: 3,
     shortLabel: "Despliegue Parque",
     title: "Despliegue Parque",
-    cronograma: { duracion: "7 meses", rango: "Meses 12 – 18" },
+    cronograma: {
+      mesInicio: 12,
+      mesFin: 18,
+      duracion: 7,
+      textoOverlap: "Inicia al finalizar la Fase 1. Paralelo con Dev.",
+    },
     presupuesto: 150_000_000,
     budgetPercentage: 38,
     justificacionPresupuesto:
@@ -119,7 +136,12 @@ const PHASES: Phase[] = [
     id: 4,
     shortLabel: "Marcha Blanca",
     title: "Marcha Blanca",
-    cronograma: { duracion: "4 meses", rango: "Meses 18 – 21" },
+    cronograma: {
+      mesInicio: 18,
+      mesFin: 21,
+      duracion: 4,
+      textoOverlap: "Fase de pruebas tras finalizar despliegue físico.",
+    },
     presupuesto: 25_000_000,
     budgetPercentage: 7,
     justificacionPresupuesto:
@@ -144,7 +166,12 @@ const PHASES: Phase[] = [
     id: 5,
     shortLabel: "Go-Live",
     title: "Go-Live",
-    cronograma: { duracion: "Continuo", rango: "Meses 22 – 24+" },
+    cronograma: {
+      mesInicio: 22,
+      mesFin: 24,
+      duracion: 3,
+      textoOverlap: "Operación continua tras el mes 22.",
+    },
     presupuesto: "$ 12.000.000 / mes",
     budgetPercentage: 0,
     justificacionPresupuesto:
@@ -173,12 +200,8 @@ function formatCOP(value: number): string {
 
 const TOTAL_MONTHS = 24;
 
-function parseMonthRange(rango: string): { start: number; end: number } {
-  const match = rango.match(/(\d+)\s*[–\-]\s*(\d+)/);
-  if (!match) return { start: 1, end: TOTAL_MONTHS };
-  const start = Math.max(1, parseInt(match[1], 10));
-  const end = Math.min(TOTAL_MONTHS, parseInt(match[2], 10));
-  return { start, end };
+function rangoLabel(mesInicio: number, mesFin: number): string {
+  return `Meses ${mesInicio} – ${mesFin}`;
 }
 
 const detailVariants = {
@@ -243,7 +266,10 @@ export default function RoadmapHome() {
                     {phase.title}
                   </h2>
                   <p className="mt-3 text-sm font-medium text-slate-300">
-                    {phase.cronograma.rango}
+                    {rangoLabel(
+                      phase.cronograma.mesInicio,
+                      phase.cronograma.mesFin,
+                    )}
                   </p>
                 </div>
                 <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-[11px] font-medium uppercase tracking-widest text-slate-300 ring-1 ring-inset ring-white/5">
@@ -270,19 +296,24 @@ export default function RoadmapHome() {
                       Cronograma (Meses)
                     </p>
                   </header>
-                  <p className="mt-4 text-3xl font-semibold tabular-nums text-slate-50">
+                  <p className="mt-4 flex items-baseline gap-1 text-3xl font-semibold tabular-nums text-slate-50">
                     {phase.cronograma.duracion}
+                    <span className="text-base font-medium text-slate-400">
+                      meses
+                    </span>
                   </p>
                   <p className="mt-1 text-sm font-medium text-indigo-300">
-                    {phase.cronograma.rango}
+                    {rangoLabel(
+                      phase.cronograma.mesInicio,
+                      phase.cronograma.mesFin,
+                    )}
                   </p>
                   <div className="mt-4">
                     <div className="flex items-end gap-[2px]">
                       {Array.from({ length: TOTAL_MONTHS }, (_, i) => {
                         const month = i + 1;
-                        const { start, end } = parseMonthRange(
-                          phase.cronograma.rango,
-                        );
+                        const start = phase.cronograma.mesInicio;
+                        const end = phase.cronograma.mesFin;
                         const inRange = month >= start && month <= end;
                         return (
                           <motion.span

@@ -303,43 +303,37 @@ export default function RoadmapHome() {
                     </span>
                   </p>
                   <p className="mt-1 text-sm font-medium text-indigo-300">
-                    {rangoLabel(
-                      phase.cronograma.mesInicio,
-                      phase.cronograma.mesFin,
-                    )}
+                    {"Mes " +
+                      phase.cronograma.mesInicio +
+                      " al " +
+                      phase.cronograma.mesFin}
                   </p>
-                  <div className="mt-4">
-                    <div className="flex items-end gap-[2px]">
-                      {Array.from({ length: TOTAL_MONTHS }, (_, i) => {
-                        const month = i + 1;
-                        const start = phase.cronograma.mesInicio;
-                        const end = phase.cronograma.mesFin;
-                        const inRange = month >= start && month <= end;
-                        return (
-                          <motion.span
-                            key={month}
-                            initial={{ scaleY: 0.4, opacity: 0 }}
-                            animate={{ scaleY: 1, opacity: 1 }}
-                            transition={{
-                              delay: 0.2 + i * 0.015,
-                              duration: 0.35,
-                              ease: [0.22, 1, 0.36, 1] as const,
-                            }}
-                            className={`h-3 flex-1 origin-bottom rounded-sm ${
-                              inRange
-                                ? "bg-gradient-to-t from-indigo-500 to-indigo-300 shadow-[0_0_6px_rgba(129,140,248,0.55)]"
-                                : "bg-slate-700/50"
-                            }`}
-                            title={`Mes ${month}`}
-                          />
-                        );
-                      })}
-                    </div>
-                    <div className="mt-1.5 flex justify-between text-[10px] font-mono tabular-nums text-slate-500">
-                      <span>M1</span>
-                      <span>M12</span>
-                      <span>M24</span>
-                    </div>
+                  <p className="mt-1 text-xs font-semibold text-blue-400">
+                    {phase.cronograma.textoOverlap}
+                  </p>
+                  <div className="relative mt-4 h-3 w-full overflow-hidden rounded-full bg-slate-800">
+                    <motion.div
+                      key={`gantt-${phase.id}`}
+                      initial={{ opacity: 0, scaleX: 0.6 }}
+                      animate={{ opacity: 1, scaleX: 1 }}
+                      transition={{
+                        duration: 0.7,
+                        delay: 0.2,
+                        ease: [0.22, 1, 0.36, 1] as const,
+                      }}
+                      className="absolute h-full origin-left rounded-full bg-indigo-500 shadow-[0_0_10px_rgba(99,102,241,0.55)]"
+                      style={{
+                        left: `${((phase.cronograma.mesInicio - 1) / TOTAL_MONTHS) * 100}%`,
+                        width: `${(phase.cronograma.duracion / TOTAL_MONTHS) * 100}%`,
+                      }}
+                    />
+                  </div>
+                  <div className="mt-1 flex justify-between text-[10px] font-mono tabular-nums text-slate-500">
+                    <span>0</span>
+                    <span>6</span>
+                    <span>12</span>
+                    <span>18</span>
+                    <span>24</span>
                   </div>
                 </motion.article>
 

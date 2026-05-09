@@ -22,6 +22,10 @@ type Phase = {
   id: number;
   shortLabel: string;
   title: string;
+  themeColor: string;
+  equipo: string;
+  dependencias: string;
+  impactoNegocio: string;
   cronograma: {
     mesInicio: number;
     mesFin: number;
@@ -43,6 +47,11 @@ const PHASES: Phase[] = [
     id: 1,
     shortLabel: "Aval Legal",
     title: "Aval Legal",
+    themeColor: "amber",
+    equipo: "2 Abogados in-house, 1 Auditor externo Ley 1581",
+    dependencias: "Bloquea Fase 3 (Compras físicas)",
+    impactoNegocio:
+      "Mitiga riesgo de demandas corporativas y viabiliza legalmente el modelo.",
     cronograma: {
       mesInicio: 1,
       mesFin: 12,
@@ -73,6 +82,11 @@ const PHASES: Phase[] = [
     id: 2,
     shortLabel: "Dev & Arquitectura",
     title: "Dev & Arquitectura",
+    themeColor: "cyan",
+    equipo: "Squad TI Colsubsidio (3 Devs), 1 Arquitecto Cloud",
+    dependencias: "Depende de F1. Bloquea F4.",
+    impactoNegocio:
+      "Crea el motor de reglas y la IP digital que automatiza el 70% del flujo.",
     cronograma: {
       mesInicio: 6,
       mesFin: 16,
@@ -102,6 +116,11 @@ const PHASES: Phase[] = [
     id: 3,
     shortLabel: "Despliegue Parque",
     title: "Despliegue Parque",
+    themeColor: "orange",
+    equipo: "Cuadrilla de 4 técnicos de red, 2 ingenieros de campo",
+    dependencias: "Depende de presupuesto liberado en F1.",
+    impactoNegocio:
+      "Garantiza operatividad offline/online en las 5 zonas críticas del parque.",
     cronograma: {
       mesInicio: 12,
       mesFin: 18,
@@ -136,6 +155,11 @@ const PHASES: Phase[] = [
     id: 4,
     shortLabel: "Marcha Blanca",
     title: "Marcha Blanca",
+    themeColor: "purple",
+    equipo: "2 Analistas UX, Equipo Marketing, Staff Operativo",
+    dependencias: "Requiere F2 y F3 completadas.",
+    impactoNegocio:
+      "Asegura la adopción del usuario y entrena al staff en resolución de conflictos.",
     cronograma: {
       mesInicio: 18,
       mesFin: 21,
@@ -166,6 +190,11 @@ const PHASES: Phase[] = [
     id: 5,
     shortLabel: "Go-Live",
     title: "Go-Live",
+    themeColor: "emerald",
+    equipo: "Operaciones Piscilago, Soporte TI Nivel 2",
+    dependencias: "Requiere éxito en pruebas Alpha de F4.",
+    impactoNegocio:
+      "Inicia la monetización y optimización real del aforo del parque.",
     cronograma: {
       mesInicio: 22,
       mesFin: 24,

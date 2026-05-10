@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Database, Gauge, Map, Waves } from "lucide-react";
+import { Database, Gauge, LayoutDashboard, Map, Waves } from "lucide-react";
 import type { LucideIcon } from "lucide-react";
 
-type NavKey = "roadmap" | "pipeline" | "dashboard";
+type NavKey = "resumen" | "roadmap" | "pipeline" | "dashboard";
 
 type NavItem = {
   key: NavKey;
@@ -15,7 +15,18 @@ type NavItem = {
 };
 
 const ITEMS: NavItem[] = [
-  { key: "roadmap", label: "Roadmap (Inicio)", href: "/", icon: Map },
+  {
+    key: "resumen",
+    label: "Resumen Ejecutivo",
+    href: "/resumen",
+    icon: LayoutDashboard,
+  },
+  {
+    key: "roadmap",
+    label: "Roadmap de Implementación",
+    href: "/",
+    icon: Map,
+  },
   {
     key: "pipeline",
     label: "Arquitectura de Datos",
@@ -32,6 +43,7 @@ const ITEMS: NavItem[] = [
 
 function resolveActiveKey(pathname: string | null): NavKey {
   if (!pathname) return "roadmap";
+  if (pathname.startsWith("/resumen")) return "resumen";
   if (pathname.startsWith("/dashboard")) return "dashboard";
   if (pathname.startsWith("/pipeline")) return "pipeline";
   return "roadmap";
@@ -44,7 +56,7 @@ export function GlobalNav() {
   return (
     <header className="sticky top-0 z-30 border-b border-white/10 bg-slate-950/70 shadow-lg shadow-black/30 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-[1600px] flex-wrap items-center justify-between gap-4 px-6 py-4">
-        <Link href="/" className="flex items-center gap-3">
+        <Link href="/resumen" className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-indigo-500 to-indigo-700 text-white shadow-lg shadow-indigo-500/30 ring-1 ring-white/20">
             <Waves className="h-5 w-5" aria-hidden />
           </div>

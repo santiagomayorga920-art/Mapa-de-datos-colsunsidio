@@ -9,6 +9,8 @@ import {
   CheckCircle2,
   CircleDollarSign,
   FileText,
+  GitBranch,
+  HardHat,
   Megaphone,
   Rocket,
   Scale,
@@ -16,6 +18,7 @@ import {
   ShieldCheck,
   Target,
   Wifi,
+  Zap,
   type LucideIcon,
 } from "lucide-react";
 
@@ -257,6 +260,8 @@ type ThemeSet = {
   badgeBg: string;
   badgeText: string;
   badgeRing: string;
+  topAccent: string;
+  iconBg: string;
 };
 
 const THEME_MAP: Record<ThemeKey, ThemeSet> = {
@@ -278,6 +283,9 @@ const THEME_MAP: Record<ThemeKey, ThemeSet> = {
     badgeBg: "bg-amber-500/15",
     badgeText: "text-amber-200",
     badgeRing: "ring-amber-300/30",
+    topAccent:
+      "bg-gradient-to-r from-amber-500 via-amber-400 to-orange-400 shadow-[0_0_12px_rgba(251,191,36,0.55)]",
+    iconBg: "bg-amber-500/15 text-amber-300 ring-amber-400/30",
   },
   cyan: {
     text: "text-cyan-200",
@@ -297,6 +305,9 @@ const THEME_MAP: Record<ThemeKey, ThemeSet> = {
     badgeBg: "bg-cyan-500/15",
     badgeText: "text-cyan-200",
     badgeRing: "ring-cyan-300/30",
+    topAccent:
+      "bg-gradient-to-r from-cyan-500 via-cyan-400 to-sky-400 shadow-[0_0_12px_rgba(103,232,249,0.55)]",
+    iconBg: "bg-cyan-500/15 text-cyan-300 ring-cyan-400/30",
   },
   orange: {
     text: "text-orange-200",
@@ -316,6 +327,9 @@ const THEME_MAP: Record<ThemeKey, ThemeSet> = {
     badgeBg: "bg-orange-500/15",
     badgeText: "text-orange-200",
     badgeRing: "ring-orange-300/30",
+    topAccent:
+      "bg-gradient-to-r from-orange-500 via-orange-400 to-amber-400 shadow-[0_0_12px_rgba(251,146,60,0.55)]",
+    iconBg: "bg-orange-500/15 text-orange-300 ring-orange-400/30",
   },
   purple: {
     text: "text-purple-200",
@@ -335,6 +349,9 @@ const THEME_MAP: Record<ThemeKey, ThemeSet> = {
     badgeBg: "bg-purple-500/15",
     badgeText: "text-purple-200",
     badgeRing: "ring-purple-300/30",
+    topAccent:
+      "bg-gradient-to-r from-purple-500 via-purple-400 to-fuchsia-400 shadow-[0_0_12px_rgba(192,132,252,0.55)]",
+    iconBg: "bg-purple-500/15 text-purple-300 ring-purple-400/30",
   },
   emerald: {
     text: "text-emerald-200",
@@ -354,6 +371,9 @@ const THEME_MAP: Record<ThemeKey, ThemeSet> = {
     badgeBg: "bg-emerald-500/15",
     badgeText: "text-emerald-200",
     badgeRing: "ring-emerald-300/30",
+    topAccent:
+      "bg-gradient-to-r from-emerald-500 via-emerald-400 to-teal-400 shadow-[0_0_12px_rgba(110,231,183,0.55)]",
+    iconBg: "bg-emerald-500/15 text-emerald-300 ring-emerald-400/30",
   },
 };
 
@@ -444,6 +464,12 @@ export default function RoadmapHome() {
                       phase.cronograma.mesFin,
                     )}
                   </p>
+                  <span
+                    className={`mt-3 inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-[11px] font-semibold uppercase tracking-widest ${theme.cardBorder} ${theme.badgeBg} ${theme.badgeText}`}
+                  >
+                    <GitBranch className="h-3 w-3" aria-hidden />
+                    {phase.dependencias}
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 rounded-full border border-white/10 bg-white/[0.05] px-4 py-2 text-[11px] font-medium uppercase tracking-widest text-slate-300 ring-1 ring-inset ring-white/5">
                   <span className="h-1.5 w-1.5 rounded-full bg-indigo-400 shadow-[0_0_10px_rgba(129,140,248,0.8)]" />
@@ -578,6 +604,70 @@ export default function RoadmapHome() {
                       </li>
                     ))}
                   </ul>
+                </motion.article>
+              </motion.div>
+
+              <motion.div
+                variants={cardStagger}
+                initial="hidden"
+                animate="visible"
+                className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-2 xl:grid-cols-12"
+              >
+                <motion.article
+                  variants={cardItem}
+                  className="rounded-2xl border border-white/10 bg-white/[0.05] p-5 shadow-xl shadow-black/30 ring-1 ring-inset ring-white/5 backdrop-blur-xl xl:col-span-4"
+                >
+                  <header className="flex items-center gap-2">
+                    <span className="inline-flex h-8 w-8 items-center justify-center rounded-lg bg-slate-500/15 text-slate-200 ring-1 ring-slate-400/25">
+                      <HardHat className="h-4 w-4" aria-hidden />
+                    </span>
+                    <p className="text-xs font-medium uppercase tracking-widest text-slate-400">
+                      Fuerza Laboral
+                    </p>
+                  </header>
+                  <p className="mt-4 text-sm leading-relaxed text-slate-100">
+                    {phase.equipo}
+                  </p>
+                  <p className="mt-3 text-[10px] font-medium uppercase tracking-widest text-slate-500">
+                    Recursos asignados a la fase
+                  </p>
+                </motion.article>
+
+                <motion.article
+                  variants={cardItem}
+                  className="relative overflow-hidden rounded-2xl border border-white/10 bg-white/[0.05] p-5 pt-6 shadow-xl shadow-black/30 ring-1 ring-inset ring-white/5 backdrop-blur-xl xl:col-span-8"
+                >
+                  <span
+                    aria-hidden
+                    className={`absolute inset-x-0 top-0 h-1 ${theme.topAccent}`}
+                  />
+                  <header className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-2">
+                      <span
+                        className={`inline-flex h-9 w-9 items-center justify-center rounded-lg ring-1 ${theme.iconBg}`}
+                      >
+                        <Zap className="h-5 w-5" aria-hidden />
+                      </span>
+                      <div>
+                        <p
+                          className={`text-[11px] font-semibold uppercase tracking-[0.25em] ${theme.textBright}`}
+                        >
+                          Impacto Estratégico · Negocio
+                        </p>
+                        <h3 className="mt-0.5 text-base font-semibold text-slate-50">
+                          Valor principal de la fase
+                        </h3>
+                      </div>
+                    </div>
+                    <span
+                      className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider ${theme.cardBorder} ${theme.badgeBg} ${theme.badgeText}`}
+                    >
+                      Fase {phase.id}
+                    </span>
+                  </header>
+                  <p className="mt-4 text-base leading-relaxed text-slate-100">
+                    {phase.impactoNegocio}
+                  </p>
                 </motion.article>
               </motion.div>
 

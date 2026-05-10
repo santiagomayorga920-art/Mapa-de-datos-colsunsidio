@@ -9,8 +9,14 @@ import {
   CheckCircle2,
   CircleDollarSign,
   FileText,
+  Megaphone,
+  Rocket,
+  Scale,
+  Server,
   ShieldCheck,
   Target,
+  Wifi,
+  type LucideIcon,
 } from "lucide-react";
 
 type Contingencia = {
@@ -233,6 +239,140 @@ function rangoLabel(mesInicio: number, mesFin: number): string {
   return `Meses ${mesInicio} – ${mesFin}`;
 }
 
+type ThemeKey = "amber" | "cyan" | "orange" | "purple" | "emerald";
+
+type ThemeSet = {
+  text: string;
+  textBright: string;
+  numberBg: string;
+  numberShadow: string;
+  numberRing: string;
+  cardBorder: string;
+  cardBg: string;
+  cardShadow: string;
+  cardRing: string;
+  underline: string;
+  halo: string;
+  watermark: string;
+  badgeBg: string;
+  badgeText: string;
+  badgeRing: string;
+};
+
+const THEME_MAP: Record<ThemeKey, ThemeSet> = {
+  amber: {
+    text: "text-amber-200",
+    textBright: "text-amber-300",
+    numberBg: "bg-gradient-to-br from-amber-400 to-amber-600",
+    numberShadow: "shadow-amber-500/40",
+    numberRing: "ring-amber-300/40",
+    cardBorder: "border-amber-300/40",
+    cardBg:
+      "bg-gradient-to-br from-amber-500/20 via-amber-500/10 to-orange-500/15",
+    cardShadow: "shadow-[0_0_30px_-4px_rgba(245,158,11,0.45)]",
+    cardRing: "ring-amber-300/30",
+    underline:
+      "bg-gradient-to-r from-amber-400 via-orange-400 to-amber-400 shadow-[0_0_10px_rgba(251,191,36,0.6)]",
+    halo: "bg-amber-400/30",
+    watermark: "text-amber-300",
+    badgeBg: "bg-amber-500/15",
+    badgeText: "text-amber-200",
+    badgeRing: "ring-amber-300/30",
+  },
+  cyan: {
+    text: "text-cyan-200",
+    textBright: "text-cyan-300",
+    numberBg: "bg-gradient-to-br from-cyan-400 to-cyan-600",
+    numberShadow: "shadow-cyan-500/40",
+    numberRing: "ring-cyan-300/40",
+    cardBorder: "border-cyan-300/40",
+    cardBg:
+      "bg-gradient-to-br from-cyan-500/20 via-cyan-500/10 to-sky-500/15",
+    cardShadow: "shadow-[0_0_30px_-4px_rgba(34,211,238,0.45)]",
+    cardRing: "ring-cyan-300/30",
+    underline:
+      "bg-gradient-to-r from-cyan-400 via-sky-400 to-cyan-400 shadow-[0_0_10px_rgba(103,232,249,0.6)]",
+    halo: "bg-cyan-400/30",
+    watermark: "text-cyan-300",
+    badgeBg: "bg-cyan-500/15",
+    badgeText: "text-cyan-200",
+    badgeRing: "ring-cyan-300/30",
+  },
+  orange: {
+    text: "text-orange-200",
+    textBright: "text-orange-300",
+    numberBg: "bg-gradient-to-br from-orange-400 to-orange-600",
+    numberShadow: "shadow-orange-500/40",
+    numberRing: "ring-orange-300/40",
+    cardBorder: "border-orange-300/40",
+    cardBg:
+      "bg-gradient-to-br from-orange-500/20 via-orange-500/10 to-amber-500/15",
+    cardShadow: "shadow-[0_0_30px_-4px_rgba(251,146,60,0.45)]",
+    cardRing: "ring-orange-300/30",
+    underline:
+      "bg-gradient-to-r from-orange-400 via-amber-400 to-orange-400 shadow-[0_0_10px_rgba(251,146,60,0.6)]",
+    halo: "bg-orange-400/30",
+    watermark: "text-orange-300",
+    badgeBg: "bg-orange-500/15",
+    badgeText: "text-orange-200",
+    badgeRing: "ring-orange-300/30",
+  },
+  purple: {
+    text: "text-purple-200",
+    textBright: "text-purple-300",
+    numberBg: "bg-gradient-to-br from-purple-400 to-purple-600",
+    numberShadow: "shadow-purple-500/40",
+    numberRing: "ring-purple-300/40",
+    cardBorder: "border-purple-300/40",
+    cardBg:
+      "bg-gradient-to-br from-purple-500/20 via-purple-500/10 to-fuchsia-500/15",
+    cardShadow: "shadow-[0_0_30px_-4px_rgba(192,132,252,0.45)]",
+    cardRing: "ring-purple-300/30",
+    underline:
+      "bg-gradient-to-r from-purple-400 via-fuchsia-400 to-purple-400 shadow-[0_0_10px_rgba(192,132,252,0.6)]",
+    halo: "bg-purple-400/30",
+    watermark: "text-purple-300",
+    badgeBg: "bg-purple-500/15",
+    badgeText: "text-purple-200",
+    badgeRing: "ring-purple-300/30",
+  },
+  emerald: {
+    text: "text-emerald-200",
+    textBright: "text-emerald-300",
+    numberBg: "bg-gradient-to-br from-emerald-400 to-emerald-600",
+    numberShadow: "shadow-emerald-500/40",
+    numberRing: "ring-emerald-300/40",
+    cardBorder: "border-emerald-300/40",
+    cardBg:
+      "bg-gradient-to-br from-emerald-500/20 via-emerald-500/10 to-teal-500/15",
+    cardShadow: "shadow-[0_0_30px_-4px_rgba(52,211,153,0.45)]",
+    cardRing: "ring-emerald-300/30",
+    underline:
+      "bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-400 shadow-[0_0_10px_rgba(110,231,183,0.6)]",
+    halo: "bg-emerald-400/30",
+    watermark: "text-emerald-300",
+    badgeBg: "bg-emerald-500/15",
+    badgeText: "text-emerald-200",
+    badgeRing: "ring-emerald-300/30",
+  },
+};
+
+function getTheme(color: string): ThemeSet {
+  return THEME_MAP[color as ThemeKey] ?? THEME_MAP.amber;
+}
+
+const PHASE_WATERMARK: Record<number, LucideIcon> = {
+  1: Scale,
+  2: Server,
+  3: Wifi,
+  4: Megaphone,
+  5: Rocket,
+};
+
+function watermarkFor(id: number): LucideIcon {
+  return PHASE_WATERMARK[id] ?? Target;
+}
+
 const detailVariants = {
   initial: { opacity: 0, x: 20 },
   animate: {
@@ -267,6 +407,7 @@ export default function RoadmapHome() {
   const [activePhase, setActivePhase] = useState<number>(1);
   const phase = PHASES.find((p) => p.id === activePhase) ?? PHASES[0];
   const totalPhases = PHASES.length;
+  const theme = getTheme(phase.themeColor);
 
   return (
     <main className="mx-auto w-full max-w-[1600px] flex-1 px-6 py-8">
@@ -284,11 +425,14 @@ export default function RoadmapHome() {
               initial="initial"
               animate="animate"
               exit="exit"
-              className="rounded-3xl border border-white/10 bg-white/[0.04] p-8 shadow-2xl shadow-black/40 ring-1 ring-inset ring-white/5 backdrop-blur-xl"
+              className={`relative isolate overflow-hidden rounded-3xl border bg-white/[0.04] p-8 shadow-2xl shadow-black/40 ring-1 ring-inset backdrop-blur-xl ${theme.cardBorder} ${theme.cardRing}`}
             >
-              <div className="flex flex-wrap items-end justify-between gap-4">
+              <Watermark phaseId={phase.id} theme={theme} />
+              <div className="relative flex flex-wrap items-end justify-between gap-4">
                 <div>
-                  <p className="text-xs font-medium uppercase tracking-[0.25em] text-indigo-300">
+                  <p
+                    className={`text-xs font-medium uppercase tracking-[0.25em] ${theme.textBright}`}
+                  >
                     Fase {phase.id} de {totalPhases}
                   </p>
                   <h2 className="mt-3 text-4xl font-semibold leading-tight tracking-tight text-slate-50 md:text-5xl">
@@ -624,6 +768,7 @@ function PhaseTimeline({ phases, activePhase, onSelect }: PhaseTimelineProps) {
         {phases.map((p) => {
           const isActive = activePhase === p.id;
           const isPast = activePhase > p.id;
+          const itemTheme = getTheme(p.themeColor);
           return (
             <li key={p.id} className="relative">
               <button
@@ -632,7 +777,7 @@ function PhaseTimeline({ phases, activePhase, onSelect }: PhaseTimelineProps) {
                 aria-pressed={isActive}
                 className={`group relative flex w-full flex-col items-start gap-3 rounded-xl border px-4 py-3 text-left transition-all duration-300 ${
                   isActive
-                    ? "border-indigo-300/40 bg-gradient-to-br from-indigo-500/20 via-indigo-500/10 to-fuchsia-500/15 shadow-[0_0_30px_-4px_rgba(129,140,248,0.45)] ring-1 ring-inset ring-indigo-300/30"
+                    ? `${itemTheme.cardBorder} ${itemTheme.cardBg} ${itemTheme.cardShadow} ring-1 ring-inset ${itemTheme.cardRing}`
                     : "border-white/10 bg-white/[0.03] opacity-60 hover:opacity-100 hover:bg-white/[0.06]"
                 }`}
               >
@@ -640,7 +785,7 @@ function PhaseTimeline({ phases, activePhase, onSelect }: PhaseTimelineProps) {
                   <span
                     className={`relative flex h-9 w-9 items-center justify-center rounded-full text-sm font-semibold tabular-nums transition ${
                       isActive
-                        ? "bg-gradient-to-br from-indigo-400 to-indigo-600 text-white shadow-lg shadow-indigo-500/40 ring-2 ring-indigo-300/40"
+                        ? `${itemTheme.numberBg} text-white shadow-lg ${itemTheme.numberShadow} ring-2 ${itemTheme.numberRing}`
                         : isPast
                           ? "bg-emerald-500/15 text-emerald-200 ring-1 ring-emerald-400/30"
                           : "bg-white/[0.05] text-slate-300 ring-1 ring-white/10"
@@ -651,7 +796,7 @@ function PhaseTimeline({ phases, activePhase, onSelect }: PhaseTimelineProps) {
                       <motion.span
                         aria-hidden
                         layoutId="activePhaseHalo"
-                        className="absolute -inset-1 rounded-full bg-indigo-400/30 blur-md"
+                        className={`absolute -inset-1 rounded-full ${itemTheme.halo} blur-md`}
                         transition={{
                           type: "spring",
                           stiffness: 280,
@@ -663,7 +808,7 @@ function PhaseTimeline({ phases, activePhase, onSelect }: PhaseTimelineProps) {
                   <div className="min-w-0 flex-1">
                     <p
                       className={`text-[10px] font-medium uppercase tracking-widest ${
-                        isActive ? "text-indigo-200" : "text-slate-400"
+                        isActive ? itemTheme.text : "text-slate-400"
                       }`}
                     >
                       Fase {p.id}
@@ -680,7 +825,7 @@ function PhaseTimeline({ phases, activePhase, onSelect }: PhaseTimelineProps) {
                 {isActive && (
                   <motion.span
                     layoutId="activePhaseUnderline"
-                    className="block h-0.5 w-full rounded-full bg-gradient-to-r from-indigo-400 via-fuchsia-400 to-indigo-400 shadow-[0_0_10px_rgba(165,180,252,0.6)]"
+                    className={`block h-0.5 w-full rounded-full ${itemTheme.underline}`}
                     transition={{
                       type: "spring",
                       stiffness: 320,
@@ -694,6 +839,28 @@ function PhaseTimeline({ phases, activePhase, onSelect }: PhaseTimelineProps) {
         })}
       </ol>
     </nav>
+  );
+}
+
+function Watermark({
+  phaseId,
+  theme,
+}: {
+  phaseId: number;
+  theme: ThemeSet;
+}) {
+  const Icon = watermarkFor(phaseId);
+  return (
+    <motion.div
+      key={`wm-${phaseId}`}
+      aria-hidden
+      initial={{ opacity: 0, scale: 0.85, x: 20 }}
+      animate={{ opacity: 0.1, scale: 1, x: 0 }}
+      transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] as const }}
+      className="pointer-events-none absolute -bottom-10 -right-10 -z-10"
+    >
+      <Icon className={`h-64 w-64 ${theme.watermark}`} aria-hidden />
+    </motion.div>
   );
 }
 
